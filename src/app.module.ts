@@ -4,6 +4,7 @@ import { InventoriesModule } from './inventories/inventories.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ClasificationsModule } from './clasifications/clasifications.module';
 import { ConfigDataSource } from './common';
+import { BrandsModule } from './brands/brands.module';
 
 @Module({
   imports: [
@@ -12,6 +13,7 @@ import { ConfigDataSource } from './common';
     ConfigModule.forRoot(),
     InventoriesModule,
     ClasificationsModule,
+    BrandsModule,
     
   ],
 })

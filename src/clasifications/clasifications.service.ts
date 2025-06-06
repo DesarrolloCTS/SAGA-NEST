@@ -16,7 +16,12 @@ export class ClasificationsService {
     return this.clasificationRepository.find();
   }
   create(createClasificationDto: CreateClasificationDto) {
-    return 'This action adds a new clasification';
+    try {
+      const clasification = this.clasificationRepository.create(createClasificationDto);
+      return this.clasificationRepository.save(clasification);
+    } catch (error) {
+      console.log(error);
+    }
   }
 
 
@@ -25,10 +30,20 @@ export class ClasificationsService {
   }
 
   update(id: number, updateClasificationDto: UpdateClasificationDto) {
-    return `This action updates a #${id} clasification`;
+
+    try {
+      const clasification = this.clasificationRepository.create(updateClasificationDto);
+      return this.clasificationRepository.update(id, clasification);
+    } catch (error) {
+      console.log(error);
+    }
   }
 
   async remove(id: number):Promise<void> {
-    await this.clasificationRepository.softDelete(id);
+    try {
+      await this.clasificationRepository.softDelete(id);
+    } catch (error) {
+      console.log(error);
+    }
   }
 }

@@ -18,17 +18,18 @@ export class ClasificationsController {
   }
 
   @Get(':id')
+
   findOne(@Param('id', ParseIntPipe) id: number) {
     return this.clasificationsService.findOne(+id);
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateClasificationDto: UpdateClasificationDto) {
+  update(@Param('id', ParseIntPipe) id: number, @Body() updateClasificationDto: UpdateClasificationDto) {
     return this.clasificationsService.update(+id, updateClasificationDto);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
+  remove(@Param('id', ParseIntPipe) id: number) {
     return this.clasificationsService.remove(+id);
   }
 }
