@@ -3,22 +3,14 @@ import {ConfigModule} from  '@nestjs/config'
 import { InventoriesModule } from './inventories/inventories.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ClasificationsModule } from './clasifications/clasifications.module';
+import { ConfigDataSource } from './common';
 
 @Module({
   imports: [
 
+    TypeOrmModule.forRoot({ ...ConfigDataSource }),
     ConfigModule.forRoot(),
     InventoriesModule,
-    TypeOrmModule.forRoot({
-      type: 'mysql',
-      host: 'localhost',
-      port: 3306,
-      username: 'root',
-      password: 'root',
-      database: 'test',
-      entities: [],
-      synchronize: false,
-    }),
     ClasificationsModule,
     
   ],

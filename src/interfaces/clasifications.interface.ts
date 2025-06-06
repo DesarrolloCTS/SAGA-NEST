@@ -1,4 +1,4 @@
-import { OmitType } from "@nestjs/mapped-types"
+
 
 export interface IClasifications{
   id: number,

@@ -1,5 +1,4 @@
 import {
-  BaseEntity,
   Column,
   CreateDateColumn,
   DeleteDateColumn,
@@ -8,24 +7,15 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn
 } from "typeorm";
+import { IClasifications } from "../../interfaces/clasifications.interface";
+import { BaseEntity } from "../../common/config/base.entity";
 //import { Assets } from "./assets.entity";
 
 @Entity()
-export class Classifications extends BaseEntity  {
-  @PrimaryGeneratedColumn()
-  id: number = 0;
+export class Classifications extends BaseEntity implements IClasifications {
 
   @Column()
   name: string = "";
-
-  @CreateDateColumn()
-  createdAt: Date = new Date();
-
-  @UpdateDateColumn({ nullable: true })
-  updatedAt?: Date | null = null;
-
-  @DeleteDateColumn({ nullable: true })
-  deletedAt: Date | null = null;
 
  /*  @OneToMany(
     () => Assets,
