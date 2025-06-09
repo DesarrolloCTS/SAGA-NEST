@@ -10,7 +10,7 @@ interface EnvsVars {
   DB_PORT: number;
   DEBBUGER_LOGS: boolean;
   PORT_APP: number;
-  //NATS_SERVERS: string[];
+  NATS_SERVERS: string[];
 }
 
 const envsSchema = joi
@@ -23,13 +23,13 @@ const envsSchema = joi
     DB_PORT: joi.number().required().positive(),
     DEBBUGER_LOGS: joi.boolean().optional().default(false),
     PORT_APP: joi.number().required().positive(),
-    //NATS_SERVERS: joi.array().items(joi.string()).required(),
+    NATS_SERVERS: joi.array().items(joi.string()).required(),
   })
   .unknown(true);
 
 const { error, value } = envsSchema.validate({
   ...process.env,
-  //NATS_SERVERS: process.env.NATS_SERVERS?.split(','),
+  NATS_SERVERS: process.env.NATS_SERVERS?.split(','),
 });
 
 if (error) {
@@ -47,5 +47,5 @@ export const envs = {
   DB_PORT: envsVars.DB_PORT,
   DEBBUGER_LOGS: envsVars.DEBBUGER_LOGS,
   PORT_APP: envsVars.PORT_APP,
-  //NATS_SERVERS: envsVars.NATS_SERVERS,
+  NATS_SERVERS: envsVars.NATS_SERVERS,
 };

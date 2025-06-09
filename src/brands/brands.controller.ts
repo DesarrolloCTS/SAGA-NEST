@@ -1,34 +1,36 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller } from '@nestjs/common';
+import { MessagePattern, Payload } from '@nestjs/microservices';
 import { BrandsService } from './brands.service';
 import { CreateBrandDto } from './dto/create-brand.dto';
 import { UpdateBrandDto } from './dto/update-brand.dto';
+import { PaginationDto } from 'src/common';
 
-@Controller('brands')
+@Controller()
 export class BrandsController {
   constructor(private readonly brandsService: BrandsService) {}
 
-  @Post()
-  create(@Body() createBrandDto: CreateBrandDto) {
+  @MessagePattern('createBrand')
+  create(@Payload() createBrandDto: CreateBrandDto) {
     return this.brandsService.create(createBrandDto);
   }
 
-  @Get()
-  findAll() {
-    return this.brandsService.findAll();
+  @MessagePattern('findAllBrands')
+  findAll(@Payload() pagination: PaginationDto) {
+    return this.brandsService.findAll(pagination);
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.brandsService.findOne(+id);
+  @MessagePattern('findOneBrand')
+  findOne(@Payload() { id }: { id: number }) {
+    return this.brandsService.findOne(id);
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateBrandDto: UpdateBrandDto) {
-    return this.brandsService.update(+id, updateBrandDto);
+  @MessagePattern('updateBrand')
+  update(@Payload() updateBrandDto: UpdateBrandDto) {
+    return this.brandsService.update( updateBrandDto);
   }
 
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.brandsService.remove(+id);
+  @MessagePattern('removeBrand')
+  remove(@Payload() { id }: { id: number }) {
+    return this.brandsService.remove(id);
   }
 }

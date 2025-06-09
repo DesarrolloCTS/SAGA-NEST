@@ -1,35 +1,39 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, ParseIntPipe } from '@nestjs/common';
+import { Controller } from '@nestjs/common';
+import { MessagePattern, Payload } from '@nestjs/microservices';
 import { ClasificationsService } from './clasifications.service';
 import { CreateClasificationDto } from './dto/create-clasification.dto';
 import { UpdateClasificationDto } from './dto/update-clasification.dto';
+import { PaginationDto } from 'src/common';
 
-@Controller('clasifications')
+@Controller()
 export class ClasificationsController {
   constructor(private readonly clasificationsService: ClasificationsService) {}
 
-  @Post()
-  create(@Body() createClasificationDto: CreateClasificationDto) {
+  @MessagePattern('createClasification')
+  create(@Payload() createClasificationDto: CreateClasificationDto) {
     return this.clasificationsService.create(createClasificationDto);
   }
 
-  @Get()
-  findAll() {
-    return this.clasificationsService.findAll();
+  @MessagePattern('findAllClasifications')
+  findAll(@Payload() pagination: PaginationDto) {
+    return this.clasificationsService.findAll(pagination);
   }
 
-  @Get(':id')
-
-  findOne(@Param('id', ParseIntPipe) id: number) {
-    return this.clasificationsService.findOne(+id);
+  @MessagePattern('findOneClasification')
+  findOne(@Payload() { id }: { id: number }) {
+    return this.clasificationsService.findOne(id);
   }
 
-  @Patch(':id')
-  update(@Param('id', ParseIntPipe) id: number, @Body() updateClasificationDto: UpdateClasificationDto) {
-    return this.clasificationsService.update(+id, updateClasificationDto);
+  @MessagePattern('updateClasification')
+  update(@Payload() updateClasificationDto: UpdateClasificationDto) {
+    return this.clasificationsService.update(
+      
+      updateClasificationDto,
+    );
   }
 
-  @Delete(':id')
-  remove(@Param('id', ParseIntPipe) id: number) {
-    return this.clasificationsService.remove(+id);
+  @MessagePattern('removeClasification')
+  remove(@Payload() { id }: { id: number }) {
+    return this.clasificationsService.remove(id);
   }
 }

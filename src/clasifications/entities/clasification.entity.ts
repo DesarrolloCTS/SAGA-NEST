@@ -1,25 +1,12 @@
-import {
-  Column,
-  CreateDateColumn,
-  DeleteDateColumn,
-  Entity,
-  OneToMany,
-  PrimaryGeneratedColumn,
-  UpdateDateColumn
-} from "typeorm";
-import { IClasifications } from "../../interfaces/clasifications.interface";
-import { BaseEntity } from "../../common/config/base.entity";
-//import { Assets } from "./assets.entity";
+import { BaseEntity } from "src/common";
+import { Resource } from "src/resources/entities/resource.entity";
+import { Column, Entity, ManyToOne, OneToMany } from "typeorm";
 
 @Entity()
-export class Classifications extends BaseEntity implements IClasifications {
-
+export class Clasification extends BaseEntity {
   @Column()
-  name: string = "";
+  name: string;
 
- /*  @OneToMany(
-    () => Assets,
-    (asset) => asset.classifications
-  )
-  assets?: Assets[];*/
-} 
+  @OneToMany(() => Resource, (resource) => resource.clasification)
+  resources: Resource[];
+}

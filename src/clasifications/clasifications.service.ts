@@ -1,49 +1,62 @@
 import { Injectable } from '@nestjs/common';
 import { CreateClasificationDto } from './dto/create-clasification.dto';
 import { UpdateClasificationDto } from './dto/update-clasification.dto';
+import { createResult, deleteResult, ErrorManager, findOneByTerm, PaginationDto, paginationResult, updateResult } from 'src/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Classifications } from './entities/clasification.entity';
+import { Clasification } from './entities/clasification.entity';
 import { Repository } from 'typeorm';
 
 @Injectable()
 export class ClasificationsService {
 
-  constructor( 
-    @InjectRepository(Classifications)
-    private clasificationRepository: Repository<Classifications>
-  ) {}
-  findAll():Promise<Classifications[]> {
-    return this.clasificationRepository.find();
-  }
-  create(createClasificationDto: CreateClasificationDto) {
-    try {
-      const clasification = this.clasificationRepository.create(createClasificationDto);
-      return this.clasificationRepository.save(clasification);
-    } catch (error) {
-      console.log(error);
-    }
+  constructor(@InjectRepository(Clasification) private clasificationRepository: Repository<Clasification>) {}
+  async create(createClasificationDto: CreateClasificationDto) {
+   try {
+     const result = await createResult(this.clasificationRepository, createClasificationDto, Clasification);
+     return result;
+   } catch (error) {
+    throw ErrorManager.createSignatureError(error);
+   }
   }
 
+  findAll(pagination: PaginationDto) {
+    try{
+      const result = paginationResult(this.clasificationRepository, pagination);
+      return result;   
+    }catch(error){
+      throw ErrorManager.createSignatureError(error);
+    }
+  }
 
   findOne(id: number) {
-    return `This action returns a #${id} clasification`;
-  }
-
-  update(id: number, updateClasificationDto: UpdateClasificationDto) {
-
-    try {
-      const clasification = this.clasificationRepository.create(updateClasificationDto);
-      return this.clasificationRepository.update(id, clasification);
-    } catch (error) {
-      console.log(error);
+    try { 
+      const result = findOneByTerm({ repository: this.clasificationRepository, term: id });
+      return result;
+    }
+    catch (error) {
+      throw ErrorManager.createSignatureError(error);
     }
   }
 
-  async remove(id: number):Promise<void> {
-    try {
-      await this.clasificationRepository.softDelete(id);
-    } catch (error) {
-      console.log(error);
+  async update(updateClasificationDto: UpdateClasificationDto) {
+    try { 
+      const { id, ...res } = updateClasificationDto;
+      const clasification = await findOneByTerm({ repository: this.clasificationRepository, term: id });
+      Object.assign(clasification, res);
+      const result = await updateResult(this.clasificationRepository, id, clasification);
+      return result;
+    }
+    catch (error) {
+      throw ErrorManager.createSignatureError(error);
+    }
+  }
+
+  async remove(id: number) {
+    try { 
+      return await deleteResult(this.clasificationRepository, id);
+    }
+    catch (error) {
+      throw ErrorManager.createSignatureError(error);
     }
   }
 }

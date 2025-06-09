@@ -1,30 +1,44 @@
-import { HttpException, HttpStatus } from '@nestjs/common';
+import { HttpStatus } from '@nestjs/common';
+import { RpcException } from '@nestjs/microservices';
 
-export class ErrorManager extends Error {
+export class ErrorManager extends RpcException {
   constructor({
     code,
     message,
   }: {
-      code: keyof typeof HttpStatus;
+    code: keyof typeof HttpStatus;
     message: string;
   }) {
-    super(`${code} :: ${message}`);
+    super({ code, message });
   }
 
   public static createSignatureError(error: any) {
     //Error para llaves duplicadas en Postgres
     if (error.detail || error.code === '23505') {
-      throw new HttpException(error.detail, HttpStatus.BAD_REQUEST);
+      throw new RpcException({
+        message: error.detail,
+        code: HttpStatus.BAD_REQUEST,
+      });
     }
+    const errorCode = error.error ? error.error.code : error.code;
+    const errorMessage = error.error ? error.error.message : error.message;
     //Errores de validaciones
-    const status = error.message?.split(' :: ');
-    if (status.length > 1) {
-      throw new HttpException(error.message, HttpStatus[`${status[0]}`]);
+    if (errorCode && HttpStatus[errorCode]) {
+      throw new RpcException({
+        message: errorMessage,
+        code: HttpStatus[errorCode],
+      });
     } else {
-      if (error.message.includes('duplicate')) {
-        throw new HttpException(error.message, HttpStatus.CONFLICT);
+      if (errorMessage.includes('duplicate')) {
+        throw new RpcException({
+          message: errorMessage,
+          code: HttpStatus.CONFLICT,
+        });
       }
-      throw new HttpException(error.message, HttpStatus.INTERNAL_SERVER_ERROR);
+      throw new RpcException({
+        message: errorMessage,
+        code: HttpStatus.INTERNAL_SERVER_ERROR,
+      });
     }
   }
 }

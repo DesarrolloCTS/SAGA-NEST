@@ -1,13 +1,15 @@
 import { Module } from '@nestjs/common';
+import { TypeOrmModule } from '@nestjs/typeorm';
+
 import { ClasificationsService } from './clasifications.service';
 import { ClasificationsController } from './clasifications.controller';
-import { TypeOrmModule } from '@nestjs/typeorm';
-import { Classifications } from './entities/clasification.entity';
+
+import { Clasification } from './entities/clasification.entity';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Classifications])],
-  exports: [TypeOrmModule],
+  imports: [TypeOrmModule.forFeature([Clasification])],
   controllers: [ClasificationsController],
   providers: [ClasificationsService],
+  exports: [ClasificationsService]
 })
 export class ClasificationsModule {}
