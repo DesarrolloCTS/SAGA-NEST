@@ -4,6 +4,7 @@ export class CreateResourceDto {
   @IsString()
   @IsNotEmpty()
   name: string;
+
   @IsString()
   @IsNotEmpty()
   serialNumer: string;
@@ -11,10 +12,12 @@ export class CreateResourceDto {
   @IsString()
   @IsNotEmpty()
   especifications: string;
+
   @IsPositive()
   @IsNotEmpty()
   @IsNumber()
   clasificationId: number;
+
   @IsPositive()
   @IsNotEmpty()
   @IsNumber()

@@ -1,5 +1,5 @@
-import { BaseEntity } from "src/common";
-import { Resource } from "src/resources/entities/resource.entity";
+import { BaseEntity } from "../../common";
+import { Resource } from "../../resources/entities/resource.entity";
 import { Column, Entity, ManyToOne, OneToMany } from "typeorm";
 
 @Entity()

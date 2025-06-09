@@ -18,10 +18,10 @@
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "jest --config ./test/jest-e2e.json",
-    "typeorm": "npx typeorm-ts-node-commonjs -d ./src/common/config/data.source.ts",
+    "typeorm": "ts-node ./node_modules/typeorm/cli.js -d ./src/common/config/data.source.ts",
     "m:c": "npm run typeorm migration:create",
-    "migrate": "ts-node -r tsconfig-paths/register ./node_modules/typeorm/cli.js -d ./src/common/config/data.source.ts migration:generate ./src/migration/update-post-table",
-    "rmig": "ts-node -r tsconfig-paths/register ./node_modules/typeorm/cli.js -d ./src/common/config/data.source.ts migration:run",
+    "migrate": "npx typeorm-ts-node-commonjs migration:generate ./src/migration/update-post-table -d ./src/common/config/data.source.ts",
+    "rmig": "npx typeorm-ts-node-commonjs migration:run -d ./src/common/config/data.source.ts",
     "m:re": "npm run typeorm migration:revert"
   },
   "dependencies": {
@@ -29,6 +29,7 @@
     "@nestjs/config": "^4.0.2",
     "@nestjs/core": "^11.0.1",
     "@nestjs/mapped-types": "*",
+    "@nestjs/microservices": "^11.1.3",
     "@nestjs/platform-express": "^11.0.1",
     "@nestjs/typeorm": "^11.0.0",
     "class-transformer": "^0.5.1",

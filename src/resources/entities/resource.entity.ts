@@ -1,6 +1,6 @@
-import { Clasification } from "src/clasifications/entities/clasification.entity";
-import { BaseEntity } from "src/common";
-import { Model } from "src/models/entities/model.entity";
+import { Clasification } from "../../clasifications/entities/clasification.entity";
+import { BaseEntity } from "../../common";
+import { Model } from "../../models/entities/model.entity";
 import { Column, Entity, ManyToOne, OneToMany } from "typeorm";
 
 @Entity()

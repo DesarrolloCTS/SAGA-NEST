@@ -12,7 +12,7 @@ export const ConfigDataSource: PostgresConnectionOptions = {
   password: envs.DB_PASSWORD,
   database: envs.DB_NAME,
   entities: [join(__dirname, '/../../**/*.entity.{ts,js}')],
-  migrations: [join(__dirname, '/../../../migrations/*.{ts,js}')],
+  migrations: [join(__dirname, '../../migration/*.{ts,js}')],
   synchronize: false,
   logging: envs.DEBBUGER_LOGS,
 };
