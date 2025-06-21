@@ -26,9 +26,8 @@ export class ClasificationsController {
 
   @MessagePattern('updateClasification')
   update(@Payload() updateClasificationDto: UpdateClasificationDto) {
-    return this.clasificationsService.update(
-      
-      updateClasificationDto,
+    return this.clasificationsService.update(      
+      updateClasificationDto
     );
   }
 

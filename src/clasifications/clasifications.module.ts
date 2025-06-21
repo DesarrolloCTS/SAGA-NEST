@@ -3,8 +3,8 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 
 import { ClasificationsService } from './clasifications.service';
 import { ClasificationsController } from './clasifications.controller';
-
-import { Clasification } from './entities/clasification.entity';
+//TODO: importar la entidad
+import { Clasification } from '../../../cts-entities/src/entities/clasification.entity';
 
 @Module({
   imports: [TypeOrmModule.forFeature([Clasification])],

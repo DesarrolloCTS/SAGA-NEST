@@ -3,13 +3,17 @@ import { CreateClasificationDto } from './dto/create-clasification.dto';
 import { UpdateClasificationDto } from './dto/update-clasification.dto';
 import { createResult, deleteResult, ErrorManager, findOneByTerm, PaginationDto, paginationResult, updateResult } from 'src/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Clasification } from './entities/clasification.entity';
+
+//TODO: CAMBIAR A CTS-ENTITIES
+import { Clasification } from '../../../cts-entities/src/entities/clasification.entity';
 import { Repository } from 'typeorm';
 
 @Injectable()
 export class ClasificationsService {
 
-  constructor(@InjectRepository(Clasification) private clasificationRepository: Repository<Clasification>) {}
+  constructor(@InjectRepository(Clasification) private clasificationRepository: Repository<Clasification>) { }
+
+
   async create(createClasificationDto: CreateClasificationDto) {
    try {
      const result = await createResult(this.clasificationRepository, createClasificationDto, Clasification);
