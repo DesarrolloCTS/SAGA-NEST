@@ -6,11 +6,12 @@ import { ResourcesController } from './resources.controller';
 import { ClasificationsModule } from '../clasifications/clasifications.module';
 import { ModelsModule } from '../models/models.module';
 
-import { Resource } from './entities/resource.entity';
+import { Resource } from '../../../cts-entities/src/entities/resource.entity';
 
 @Module({
   imports: [ClasificationsModule, ModelsModule,TypeOrmModule.forFeature([Resource]) ],
   controllers: [ResourcesController],
   providers: [ResourcesService],
+  exports: [ResourcesService]
 })
 export class ResourcesModule {}

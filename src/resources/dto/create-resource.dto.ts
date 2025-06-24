@@ -7,7 +7,11 @@ export class CreateResourceDto {
 
   @IsString()
   @IsNotEmpty()
-  serialNumer: string;
+  description: string;
+
+  @IsNumber()
+  @IsNotEmpty()
+  quatity: number;
 
   @IsString()
   @IsNotEmpty()

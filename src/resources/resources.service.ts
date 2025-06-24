@@ -7,7 +7,6 @@ import {
   ErrorManager,
   findOneByTerm,
   FindOneWhitTermAndRelationDto,
-  PaginationDto,
   PaginationRelationsDto,
   paginationResult,
   updateResult,
@@ -16,7 +15,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { FindManyOptions, FindOneOptions, Repository } from 'typeorm';
 import { ClasificationsService } from 'src/clasifications/clasifications.service';
 import { ModelsService } from 'src/models/models.service';
-import { Resource } from './entities/resource.entity';
+import { Resource } from '../../../cts-entities/src/entities/resource.entity';
 
 @Injectable()
 export class ResourcesService {
