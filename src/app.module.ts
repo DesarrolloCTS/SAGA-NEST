@@ -8,6 +8,7 @@ import { BrandsModule } from './brands/brands.module';
 import { ResourcesModule } from './resources/resources.module';
 import { EnablingModule } from './enabling/enabling.module';
 import { MantenanceModule } from './mantenance/mantenance.module';
+import { AddRemoveModule } from './add-remove/add-remove.module';
 
 @Module({
   imports: [
@@ -18,7 +19,8 @@ import { MantenanceModule } from './mantenance/mantenance.module';
     ResourcesModule,
     ModelsModule,
     EnablingModule,
-    MantenanceModule
+    MantenanceModule,
+    AddRemoveModule
   ],
 })
 export class AppModule { }

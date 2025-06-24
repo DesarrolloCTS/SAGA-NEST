@@ -7,7 +7,6 @@ import {
   ErrorManager,
   findOneByTerm,
   FindOneWhitTermAndRelationDto,
-  PaginationDto,
   PaginationRelationsDto,
   paginationResult,
   updateResult,

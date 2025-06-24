@@ -4,7 +4,7 @@ import { UpdateAdmissionsDischargeDto } from './dto/update-admissions-discharge.
 import { InjectRepository } from '@nestjs/typeorm';
 
 //TODO:CAMBIAR A CTS-ENTITIES
-import { AdmissionsDischarge } from '../../../cts-entities/src/entities/admissions-discharge.entity';
+import { AdmissionsDischarge } from 'cts-entities/src/entities/addRemove.entity';
 import { FindManyOptions, Repository } from 'typeorm';
 import { TypesService } from 'src/types/types.service';
 import { createResult, deleteResult, ErrorManager, findOneByTerm, FindOneWhitTermAndRelationDto, PaginationRelationsDto, paginationResult, updateResult } from 'src/common';

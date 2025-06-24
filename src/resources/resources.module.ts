@@ -12,5 +12,6 @@ import { Resource } from '../../../cts-entities/src/entities/resource.entity';
   imports: [ClasificationsModule, ModelsModule,TypeOrmModule.forFeature([Resource]) ],
   controllers: [ResourcesController],
   providers: [ResourcesService],
+  exports: [ResourcesService]
 })
 export class ResourcesModule {}
