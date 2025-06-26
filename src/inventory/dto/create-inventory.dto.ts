@@ -16,5 +16,12 @@ export class CreateInventoryDto {
   @IsNumber()
   resourceId: number
 
+  @IsNotEmpty()
+  @IsNumber()
+  @IsPositive()
+  addRemovalId: number
 
+  @IsString()
+  @IsNotEmpty()
+  ubications: string
 }

@@ -7,3 +7,7 @@ export enum STATUS_MANTENANCE {
   EN_OPERACION = 'EN_OPERACION',
   EN_ALMACEN = 'EN_ALMACEN',
 }
+export enum ADD_REMOVE {
+  ALTA = 'ALTA',
+  BAJA = 'BAJA',
+}

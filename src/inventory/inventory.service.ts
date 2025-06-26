@@ -8,7 +8,6 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { createResult, deleteResult, ErrorManager, findOneByTerm, FindOneWhitTermAndRelationDto, PaginationRelationsDto, paginationResult, updateResult } from 'src/common';
 import { StateService } from 'src/state/state.service';
 import { ResourcesService } from 'src/resources/resources.service';
-import { stat } from 'fs';
 
 @Injectable()
 export class InventoryService {
@@ -17,17 +16,21 @@ export class InventoryService {
     private readonly stateServices: StateService,
     private readonly resourceServices: ResourcesService
   ) { }
-
-  //TODO: VERIFICAR LA MANERA DE CREAR 
   async create(createInventoryDto: CreateInventoryDto) {
     try {
+      const { stateId, resourceId, addRemovalId, ...CreateInventoryDto } = createInventoryDto
       const stateExist = await this.stateServices.findOne(createInventoryDto.stateId)
       const resourceExist = await this.resourceServices.findOne({ term: createInventoryDto.resourceId })
+      const addRemovalExist = await this.resourceServices.findOne({ term: createInventoryDto.addRemovalId })
+      const ubicationExist = await this.resourceServices.findOne({ term: createInventoryDto.ubications })
 
+      if (!stateExist && !resourceExist && !addRemovalExist && !ubicationExist) {
+        return ErrorManager.createSignatureError(`stateId: ${createInventoryDto.stateId}, resourceId: ${createInventoryDto.resourceId}, addRemovalId: ${createInventoryDto.addRemovalId} ubicationId: ${createInventoryDto.ubications} not found`)
+      }
       const result = await createResult(
         this.inventoryRepository,
         {
-          ...CreateInventoryDto, state: stateExist, resource: resourceExist
+          ...CreateInventoryDto, addRemoval: addRemovalExist, state: stateExist, resource: resourceExist, ubications: ubicationExist
         },
         Inventory
       )
