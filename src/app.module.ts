@@ -9,6 +9,7 @@ import { ResourcesModule } from './resources/resources.module';
 import { EnablingModule } from './enabling/enabling.module';
 import { MantenanceModule } from './mantenance/mantenance.module';
 import { AddRemoveModule } from './add-remove/add-remove.module';
+import { AssignmentsModule } from './assignments/assignments.module';
 
 @Module({
   imports: [
@@ -20,7 +21,8 @@ import { AddRemoveModule } from './add-remove/add-remove.module';
     ModelsModule,
     EnablingModule,
     MantenanceModule,
-    AddRemoveModule
+    AddRemoveModule,
+    AssignmentsModule
   ],
 })
 export class AppModule { }

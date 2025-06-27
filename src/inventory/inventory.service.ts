@@ -21,7 +21,10 @@ export class InventoryService {
       const { stateId, resourceId, addRemovalId, ...CreateInventoryDto } = createInventoryDto
       const stateExist = await this.stateServices.findOne(createInventoryDto.stateId)
       const resourceExist = await this.resourceServices.findOne({ term: createInventoryDto.resourceId })
-      const addRemovalExist = await this.resourceServices.findOne({ term: createInventoryDto.addRemovalId })
+      const addRemovalExist = await this.resourceServices.findOne({
+        term: createInventoryDto.addRemovalId,
+        relations: true
+      })
       const ubicationExist = await this.resourceServices.findOne({ term: createInventoryDto.ubications })
 
       if (!stateExist && !resourceExist && !addRemovalExist && !ubicationExist) {
@@ -35,21 +38,26 @@ export class InventoryService {
         Inventory
       )
 
+      //Aumentar stock
+      await aumentarStock(resourceExist.id)
       return result
     } catch (error) {
 
     }
   }
 
-  async findAll(pagination: PaginationRelationsDto) {
+  async findAll(pagination: PaginationRelationsDto, type: string) {
     try {
+
       const option: FindManyOptions<Inventory> = {}
       if (pagination.relations) option.relations = {
         state: true,
         resource: {
           clasification: true,
-          model: true
+          model: true,
+
         }
+
       }
       const result = await paginationResult(this.inventoryRepository, { ...pagination, options: option });
       return result;
@@ -85,10 +93,6 @@ export class InventoryService {
   async update(updateInventoryDto: UpdateInventoryDto) {
     try {
       const { id, ...rest } = updateInventoryDto;
-      const { stateId, resourceId } = rest
-
-
-
       const inventory = await findOneByTerm({
         repository: this.inventoryRepository,
         term: id,
@@ -105,9 +109,31 @@ export class InventoryService {
 
   async remove(id: number) {
     try {
+      //Disminuir stock por cada item eliminado 
+      await disminuirStock(id)
       return await deleteResult(this.inventoryRepository, id);
+
     } catch (error) {
       throw ErrorManager.createSignatureError(error);
     }
   }
 }
+
+async function aumentarStock(id: number) {
+
+  const resource = await this.resourceServices.findOne({ term: id });
+  if (resource) {
+    resource.quatity + 1
+  }
+  return "ok";
+
+}
+
+async function disminuirStock(id: number) {
+  const resource = await this.resourceServices.findOne({ term: id });
+  if (resource) {
+    resource.quatity - 1
+  }
+  return "ok";
+}
+

@@ -15,7 +15,7 @@ export class InventoryController {
   }
 
   @MessagePattern('findAllInventory')
-  findAll(@Payload() pagination: PaginationDto) {
+  findAll(@Payload() pagination: PaginationDto, type: string) {
     return this.inventoryService.findAll(pagination);
   }
 

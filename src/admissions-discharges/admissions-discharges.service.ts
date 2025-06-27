@@ -4,7 +4,7 @@ import { UpdateAdmissionsDischargeDto } from './dto/update-admissions-discharge.
 import { InjectRepository } from '@nestjs/typeorm';
 
 //TODO:CAMBIAR A CTS-ENTITIES
-import { AdmissionsDischarge } from 'cts-entities/src/entities/addRemove.entity';
+import { admissionsDischarges } from '../../../cts-entities/src/entities/AdmissionsDischarge.entity';
 import { FindManyOptions, Repository } from 'typeorm';
 import { TypesService } from 'src/types/types.service';
 import { createResult, deleteResult, ErrorManager, findOneByTerm, FindOneWhitTermAndRelationDto, PaginationRelationsDto, paginationResult, updateResult } from 'src/common';
@@ -12,7 +12,7 @@ import { createResult, deleteResult, ErrorManager, findOneByTerm, FindOneWhitTer
 @Injectable()
 export class AdmissionsDischargesService {
   constructor(
-    @InjectRepository(AdmissionsDischarge)
+    @InjectRepository(admissionsDischarges)
     private readonly admissionsDischargeRepository: Repository<AdmissionsDischarge>,
     private readonly typesService: TypesService
   ) { }
@@ -24,7 +24,7 @@ export class AdmissionsDischargesService {
         {
           ...createAdmissionsDischargeDto, types: typeExist
         },
-        AdmissionsDischarge
+        admissionsDischarges
       );
       return result
     }
@@ -35,7 +35,7 @@ export class AdmissionsDischargesService {
 
   async findAll(pagination: PaginationRelationsDto) {
     try {
-      const option: FindManyOptions<AdmissionsDischarge> = {};
+      const option: FindManyOptions<admissionsDischarges> = {};
       if (pagination.relations) option.relations = { types: true };
       const result = await paginationResult(this.admissionsDischargeRepository, {
         ...pagination,
@@ -50,7 +50,7 @@ export class AdmissionsDischargesService {
 
   async findOne(id: FindOneWhitTermAndRelationDto) {
     try {
-      const option: FindManyOptions<AdmissionsDischarge> = {}
+      const option: FindManyOptions<admissionsDischarges> = {}
       if (id.relations) option.relations = { types: true }
       const result = findOneByTerm({
         repository: this.admissionsDischargeRepository,

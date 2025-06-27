@@ -33,23 +33,7 @@ export class AddRemoveService {
           addRemoval,
           queryRunner,
         )
-
-        for (let i = 0; i < idIventory.length; i++) {
-          const inventoryExist = await this.inventoryService.findOne(
-            {
-              term: idIventory[i]
-            }
-          )
-          /*   if (inventoryExist) {
-              await this.inventoryService.update({
-                id: inventoryExist.id,
-                addRemoval: addRemove.id
-              })
-            } */
-        }
-
         return addRemove
-
       }
       )
     }

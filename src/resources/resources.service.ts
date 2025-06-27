@@ -87,7 +87,7 @@ export class ResourcesService {
       const { id, ...res } = updateResourceDto;
       const resource = await this.findOne({ term: id, relations: true });
 
-      if (res.modelId && res.modelId !== resource.model.id) { 
+      if (res.modelId && res.modelId !== resource.model.id) {
         const modelExist = await this.modelsService.findOne({
           term: res.modelId,
         });

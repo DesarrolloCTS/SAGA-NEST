@@ -24,4 +24,9 @@ export class CreateInventoryDto {
   @IsString()
   @IsNotEmpty()
   ubications: string
+
+  @IsNotEmpty()
+  @IsNumber()
+  @IsPositive()
+  assignmentId: number
 }
