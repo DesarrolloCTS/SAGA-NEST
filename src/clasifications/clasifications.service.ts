@@ -3,9 +3,7 @@ import { CreateClasificationDto } from './dto/create-clasification.dto';
 import { UpdateClasificationDto } from './dto/update-clasification.dto';
 import { createResult, deleteResult, ErrorManager, findOneByTerm, PaginationDto, paginationResult, updateResult } from 'src/common';
 import { InjectRepository } from '@nestjs/typeorm';
-
-//TODO: CAMBIAR A CTS-ENTITIES
-import { Clasification } from '../../../cts-entities/src/entities/clasification.entity';
+import { Clasification } from 'cts-entities';
 import { Repository } from 'typeorm';
 
 @Injectable()

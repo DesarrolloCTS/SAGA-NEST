@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { CreateModelDto } from './dto/create-model.dto';
 import { UpdateModelDto } from './dto/update-model.dto';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Model } from './entities/model.entity';
+import { Model } from 'cts-entities';
 import { FindManyOptions, FindOneOptions, Repository } from 'typeorm';
 import { createResult, deleteResult, ErrorManager, findOneByTerm, FindOneWhitTermAndRelationDto, PaginationDto, PaginationRelationsDto, paginationResult, updateResult } from 'src/common';
 import { BrandsService } from 'src/brands/brands.service';

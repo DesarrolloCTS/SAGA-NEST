@@ -3,11 +3,10 @@ import { CreateAddRemoveDto } from './dto/create-add-remove.dto';
 import { UpdateAddRemoveDto } from './dto/update-add-remove.dto';
 import { createResult, deleteResult, ErrorManager, findOneByTerm, FindOneWhitTermAndRelationDto, PaginationRelationsDto, paginationResult, runInTransaction } from 'src/common';
 import { DataSource, FindManyOptions, FindOneOptions, Repository } from 'typeorm';
-import { addRemoval } from 'cts-entities/src/entities/addRemoval.entity';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Inventory } from 'cts-entities/src/entities/inventory.entity';
+import { addRemoval } from 'cts-entities';
+import { InjectRepository } from '@nestjs/typeorm'
 import { InventoryService } from 'src/inventory/inventory.service';
-import { run } from 'node:test';
+
 
 @Injectable()
 export class AddRemoveService {

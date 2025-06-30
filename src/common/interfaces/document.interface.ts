@@ -1,11 +1,10 @@
-import { IEmployee } from './employee.interface';
 
 export interface IDocument {
   url_file: string;
   size?: number;
   name: string;
   type: ITypeDocument;
-  employee: IEmployee;
+
 }
 
 export interface ITypeDocument {

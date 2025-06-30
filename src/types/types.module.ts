@@ -1,11 +1,11 @@
 import { Module } from '@nestjs/common';
 import { TypesService } from './types.service';
 import { TypesController } from './types.controller';
-import { Type } from './entities/type.entity';
+import { TypeDocumentEntity } from 'cts-entities';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Type])],
+  imports: [TypeOrmModule.forFeature([TypeDocumentEntity])],
   controllers: [TypesController],
   providers: [TypesService],
   exports: [TypesService]

@@ -15,7 +15,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { FindManyOptions, FindOneOptions, Repository } from 'typeorm';
 import { ClasificationsService } from 'src/clasifications/clasifications.service';
 import { ModelsService } from 'src/models/models.service';
-import { Resource } from '../../../cts-entities/src/entities/resource.entity';
+import { Resource } from 'cts-entities';
 
 @Injectable()
 export class ResourcesService {
@@ -32,7 +32,7 @@ export class ResourcesService {
       );
 
       const modelExist = await this.modelsService.findOne({
-        term: createResourceDto.modelId,
+        term: createResourceDto.modelId
       });
 
       const result = await createResult(

@@ -3,7 +3,7 @@ import { EnablingService } from './enabling.service';
 import { EnablingController } from './enabling.controller';
 import { TypesModule } from 'src/types/types.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { Habilitations } from 'cts-entities/src/entities/habilitations.entity';
+import { Habilitations } from 'cts-entities';
 
 @Module({
   imports: [TypeOrmModule.forFeature([Habilitations]), TypesModule],

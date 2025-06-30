@@ -2,9 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { CreateAdmissionsDischargeDto } from './dto/create-admissions-discharge.dto';
 import { UpdateAdmissionsDischargeDto } from './dto/update-admissions-discharge.dto';
 import { InjectRepository } from '@nestjs/typeorm';
-
-//TODO:CAMBIAR A CTS-ENTITIES
-import { admissionsDischarges } from '../../../cts-entities/src/entities/AdmissionsDischarge.entity';
+import { admissionsDischarges } from 'cts-entities';
 import { FindManyOptions, Repository } from 'typeorm';
 import { TypesService } from 'src/types/types.service';
 import { createResult, deleteResult, ErrorManager, findOneByTerm, FindOneWhitTermAndRelationDto, PaginationRelationsDto, paginationResult, updateResult } from 'src/common';
@@ -13,7 +11,7 @@ import { createResult, deleteResult, ErrorManager, findOneByTerm, FindOneWhitTer
 export class AdmissionsDischargesService {
   constructor(
     @InjectRepository(admissionsDischarges)
-    private readonly admissionsDischargeRepository: Repository<AdmissionsDischarge>,
+    private readonly admissionsDischargeRepository: Repository<admissionsDischarges>,
     private readonly typesService: TypesService
   ) { }
   async create(createAdmissionsDischargeDto: CreateAdmissionsDischargeDto) {
@@ -22,7 +20,7 @@ export class AdmissionsDischargesService {
       const result = await createResult(
         this.admissionsDischargeRepository,
         {
-          ...createAdmissionsDischargeDto, types: typeExist
+          ...createAdmissionsDischargeDto,
         },
         admissionsDischarges
       );
@@ -36,7 +34,15 @@ export class AdmissionsDischargesService {
   async findAll(pagination: PaginationRelationsDto) {
     try {
       const option: FindManyOptions<admissionsDischarges> = {};
-      if (pagination.relations) option.relations = { types: true };
+      if (pagination.relations) option.relations = {
+        inventory: {
+          resource: {
+            clasification: true,
+            model: true
+          }
+        }
+
+      };
       const result = await paginationResult(this.admissionsDischargeRepository, {
         ...pagination,
         options: option,
@@ -51,7 +57,14 @@ export class AdmissionsDischargesService {
   async findOne(id: FindOneWhitTermAndRelationDto) {
     try {
       const option: FindManyOptions<admissionsDischarges> = {}
-      if (id.relations) option.relations = { types: true }
+      if (id.relations) option.relations = {
+        inventory: {
+          resource: {
+            clasification: true,
+            model: true
+          }
+        }
+      }
       const result = findOneByTerm({
         repository: this.admissionsDischargeRepository,
         term: id.term,

@@ -20,13 +20,13 @@ export class EnablingController {
   }
   
   @MessagePattern('findOneEnabling')
-  findOne(@Payload() findOne: FindOneWhitTermAndRelationDto) {
-    return this.enablingService.findOne(findOne);
+  findOne(@Payload() { id }: { id: number }) {
+    return this.enablingService.findOne(id);
   }
 
   @MessagePattern('updateEnabling')
-  update(@Payload() updateEnablingDto: UpdateEnablingDto) {
-    return this.enablingService.update( updateEnablingDto);
+  update(@Payload() { id }: { id: number }, updateEnablingDto: UpdateEnablingDto) {
+    return this.enablingService.update(id, updateEnablingDto);
   }
 
   @MessagePattern('removeEnabling')

@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { CreateTypeDto } from './dto/create-type.dto';
 import { UpdateTypeDto } from './dto/update-type.dto';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Type } from './entities/type.entity';
+import { TypeDocumentEntity as Type } from 'cts-entities';
 import { Repository } from 'typeorm';
 import { createResult, deleteResult, ErrorManager, findOneByTerm, PaginationDto, paginationResult, updateResult } from 'src/common';
 

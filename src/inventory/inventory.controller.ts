@@ -3,7 +3,7 @@ import { MessagePattern, Payload } from '@nestjs/microservices';
 import { InventoryService } from './inventory.service';
 import { CreateInventoryDto } from './dto/create-inventory.dto';
 import { UpdateInventoryDto } from './dto/update-inventory.dto';
-import { FindOneWhitTermAndRelationDto, PaginationDto } from 'src/common';
+import { FindOneWhitTermAndRelationDto, PaginationDto, PaginationRelationsDto } from 'src/common';
 
 @Controller()
 export class InventoryController {
@@ -15,7 +15,7 @@ export class InventoryController {
   }
 
   @MessagePattern('findAllInventory')
-  findAll(@Payload() pagination: PaginationDto, type: string) {
+  findAll(@Payload() pagination: PaginationRelationsDto) {
     return this.inventoryService.findAll(pagination);
   }
 

@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { CreateAssignmentDto } from './dto/create-assignment.dto';
 import { UpdateAssignmentDto } from './dto/update-assignment.dto';
 import { createResult, deleteResult, ErrorManager, findOneByTerm, FindOneWhitTermAndRelationDto, PaginationRelationsDto, paginationResult, runInTransaction, updateResult } from 'src/common';
-import { AssignmentsReturns as Assignments } from '../../../cts-entities/src/entities/assignmentsReturns.entity';
+import { AssignmentsReturns as Assignments } from 'cts-entities';
 import { InjectRepository } from '@nestjs/typeorm';
 import { FindManyOptions, FindOneOptions, Repository } from 'typeorm';
 import { DataSource } from 'typeorm';

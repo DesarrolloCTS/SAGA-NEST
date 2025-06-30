@@ -8,7 +8,6 @@ import {
 import { Type } from 'class-transformer';
 
 import { IPaginateFilter, IPagination } from '../interfaces';
-import { STATUS, STATUS_EMPLOYEE } from '../constants';
 
 export class PaginationDto implements IPagination {
   @IsNumber()
@@ -36,11 +35,3 @@ export class PaginationRelationsDto extends PaginationDto {
   relations?: boolean;
 }
 
-export class PaginationFilterStatusDto<T>
-  extends PaginationRelationsDto
-  implements IPaginateFilter<T>
-{
-  @IsEnum([...Object.values(STATUS), ...Object.values(STATUS_EMPLOYEE)])
-  @IsOptional()
-  status?: T extends { status: infer U } ? U : never;
-}

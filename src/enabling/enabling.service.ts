@@ -5,37 +5,38 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Enabling } from './entities/enabling.entity';
 import { FindManyOptions, Repository } from 'typeorm';
 import { createResult, ErrorManager, PaginationRelationsDto } from 'src/common';
-import { Habilitations } from 'cts-entities/src/entities/habilitations.entity';
+import { Habilitations } from 'cts-entities';
 
 @Injectable()
 export class EnablingService {
   constructor(
     @InjectRepository(Habilitations) private readonly enablingRepository: Repository<Habilitations>,
-  ) {}
+  ) { }
   async create(createEnablingDto: CreateEnablingDto) {
     try {
-      const inventoryExist = await this.enablingRepository.find({
-        createEnablingDto.inventory
-      })
+      const result = await createResult(
+        this.enablingRepository,
+        {
+          ...createEnablingDto,
+        },
+        Enabling
+      );
       return result;
     } catch (error) {
       throw ErrorManager.createSignatureError(error);
     }
   }
 
-  findAll(
-    pagination: PaginationRelationsDto
-  ) {
+  findAll(pagination: PaginationRelationsDto) {
     try {
       const options: FindManyOptions<Enabling> = {}
       if (pagination.relations) options.relations = { state: true }
-        
-      }
     } catch (error) {
       throw ErrorManager.createSignatureError(error);
       
     }
   }
+
 
   findOne(id: number) {
     return `This action returns a #${id} enabling`;

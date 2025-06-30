@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { CreateBrandDto } from './dto/create-brand.dto';
 import { UpdateBrandDto } from './dto/update-brand.dto';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Brand } from './entities/brand.entity';
+import { Brand } from 'cts-entities';
 import { Repository } from 'typeorm';
 import {
   createResult,

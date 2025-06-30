@@ -1,8 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { CreateInventoryDto } from './dto/create-inventory.dto';
 import { UpdateInventoryDto } from './dto/update-inventory.dto';
-//TODO: CAMBIAR A CTS-ENTITIES
-import { Inventory } from '../../../cts-entities/src/entities/inventory.entity';
+import { Inventory } from 'cts-entities';
 import { FindManyOptions, Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { createResult, deleteResult, ErrorManager, findOneByTerm, FindOneWhitTermAndRelationDto, PaginationRelationsDto, paginationResult, updateResult } from 'src/common';
@@ -46,7 +45,7 @@ export class InventoryService {
     }
   }
 
-  async findAll(pagination: PaginationRelationsDto, type: string) {
+  async findAll(pagination: PaginationRelationsDto) {
     try {
 
       const option: FindManyOptions<Inventory> = {}

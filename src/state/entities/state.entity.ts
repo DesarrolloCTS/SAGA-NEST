@@ -1,5 +1,5 @@
 import { BaseEntity } from "src/common";
-import { Inventory } from "src/Entities/inventory.entity";
+import { Inventory } from "cts-entities";
 import { Column, Entity, OneToMany } from "typeorm";
 
 @Entity()
