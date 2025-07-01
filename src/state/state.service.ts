@@ -3,7 +3,7 @@ import { CreateStateDto } from './dto/create-state.dto';
 import { UpdateStateDto } from './dto/update-state.dto';
 import { createResult, deleteResult, ErrorManager, findOneByTerm, PaginationDto, paginationResult, updateResult } from 'src/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { State } from './entities/state.entity';
+import { State } from 'cts-entities';
 import { Repository } from 'typeorm';
 @Injectable()
 export class StateService {
