@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common';
-import {ConfigModule} from  '@nestjs/config'
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { ConfigDataSource } from 'cts-entities';
+
 import { ClasificationsModule } from './clasifications/clasifications.module';
 import { ModelsModule } from './models/models.module';
 import { BrandsModule } from './brands/brands.module';
@@ -9,11 +10,10 @@ import { EnablingModule } from './enabling/enabling.module';
 import { MantenanceModule } from './mantenance/mantenance.module';
 import { AddRemoveModule } from './add-remove/add-remove.module';
 import { AssignmentsModule } from './assignments/assignments.module';
-import { ConfigDataSource } from 'cts-entities';
 
 @Module({
   imports: [
-    TypeOrmModule.forRoot({ ...ConfigDataSource as any }),
+    TypeOrmModule.forRoot({ ...ConfigDataSource }),
     ClasificationsModule,
     BrandsModule,
     ResourcesModule,
@@ -21,7 +21,7 @@ import { ConfigDataSource } from 'cts-entities';
     EnablingModule,
     MantenanceModule,
     AddRemoveModule,
-    AssignmentsModule
+    AssignmentsModule,
   ],
 })
-export class AppModule { }
+export class AppModule {}
