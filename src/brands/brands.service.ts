@@ -13,7 +13,6 @@ import {
   paginationResult,
   updateResult,
 } from 'src/common';
-import { asyncWrapProviders } from 'async_hooks';
 
 @Injectable()
 export class BrandsService {

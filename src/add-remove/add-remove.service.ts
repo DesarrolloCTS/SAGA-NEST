@@ -5,7 +5,6 @@ import { createResult, deleteResult, ErrorManager, findOneByTerm, FindOneWhitTer
 import { DataSource, FindManyOptions, FindOneOptions, Repository } from 'typeorm';
 import { addRemoval } from 'cts-entities';
 import { InjectRepository } from '@nestjs/typeorm'
-import { InventoryService } from 'src/inventory/inventory.service';
 
 
 @Injectable()
@@ -13,7 +12,6 @@ export class AddRemoveService {
   constructor(
     @InjectRepository(addRemoval)
     private readonly addRemovalRepository: Repository<addRemoval>,
-    private readonly inventoryService: InventoryService,
     private readonly dataSource: DataSource,
   ) {}
   async create(createAddRemoveDto: CreateAddRemoveDto) {

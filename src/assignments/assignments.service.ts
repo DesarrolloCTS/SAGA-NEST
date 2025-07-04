@@ -6,7 +6,6 @@ import { AssignmentsReturns as Assignments } from 'cts-entities';
 import { InjectRepository } from '@nestjs/typeorm';
 import { FindManyOptions, FindOneOptions, Repository } from 'typeorm';
 import { DataSource } from 'typeorm';
-import { InventoryService } from 'src/inventory/inventory.service';
 
 @Injectable()
 export class AssignmentsService {
@@ -14,7 +13,7 @@ export class AssignmentsService {
     @InjectRepository(Assignments)
     private readonly assignmentsRepository: Repository<Assignments>,
     private readonly dataSource: DataSource,
-    private readonly InventoryService: InventoryService
+
   ) {}
   create(createAssignmentDto: CreateAssignmentDto) {
     try {
@@ -91,21 +90,18 @@ export class AssignmentsService {
     try {
       const { id,...res } = updateAssignmentDto;
       return runInTransaction(this.dataSource, async (manager) =>{
-        const resource = await findOneByTerm({
-          repository: this.assignmentsRepository,
-          term: id,
-        });
+
         const result = await updateResult(
           this.assignmentsRepository,
           id,
-          resource
+          res
         )
-        await this.InventoryService.update(resource)
+
         return result;
       })
     } catch (error) {
       console.log(error);
-      throw ErrorManager.createSignatureError(error);
+      throw ErrorManager.createSignatureError(error); 
       
     }
   }

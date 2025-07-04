@@ -5,28 +5,39 @@ export class CreateInventoryDto {
   @IsNotEmpty()
   Idname: string;
 
+  @IsString()
+  @IsNotEmpty()
+  serialNumber: string;
+
   @IsNumber()
-  @IsNumber()
+  @IsNotEmpty()
   @IsPositive()
+  user_id: number
+
+  @IsNumber()  
   stateId: number
 
-
-  @IsPositive()
-  @IsNotEmpty()
   @IsNumber()
   resourceId: number
 
-  @IsNotEmpty()
   @IsNumber()
-  @IsPositive()
   addRemovalId: number
 
-  @IsString()
-  @IsNotEmpty()
-  ubications: string
-
-  @IsNotEmpty()
   @IsNumber()
-  @IsPositive()
+  ubications: number
+
+  @IsNumber()  
   assignmentId: number
+
+  @IsNumber()
+  admissionsDischargesId: number
+
+  @IsNumber()
+  habilitationId: number
+
+  @IsNumber()
+  mantenanceId: number
+
+
+
 }

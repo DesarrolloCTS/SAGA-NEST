@@ -4,7 +4,7 @@ import { UpdateAdmissionsDischargeDto } from './dto/update-admissions-discharge.
 import { InjectRepository } from '@nestjs/typeorm';
 import { admissionsDischarges } from 'cts-entities';
 import { FindManyOptions, Repository } from 'typeorm';
-import { TypesService } from 'src/types/types.service';
+
 import { createResult, deleteResult, ErrorManager, findOneByTerm, FindOneWhitTermAndRelationDto, PaginationRelationsDto, paginationResult, updateResult } from 'src/common';
 
 @Injectable()
@@ -12,11 +12,11 @@ export class AdmissionsDischargesService {
   constructor(
     @InjectRepository(admissionsDischarges)
     private readonly admissionsDischargeRepository: Repository<admissionsDischarges>,
-    private readonly typesService: TypesService
+    //private readonly typesService: TypesService
   ) { }
   async create(createAdmissionsDischargeDto: CreateAdmissionsDischargeDto) {
     try {
-      const typeExist = await this.typesService.findOne(createAdmissionsDischargeDto.typeId);
+      //const typeExist = await this.typesService.findOne(createAdmissionsDischargeDto.typeId);
       const result = await createResult(
         this.admissionsDischargeRepository,
         {

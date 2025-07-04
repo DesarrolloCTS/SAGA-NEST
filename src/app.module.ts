@@ -10,7 +10,9 @@ import { EnablingModule } from './enabling/enabling.module';
 import { MantenanceModule } from './mantenance/mantenance.module';
 import { AddRemoveModule } from './add-remove/add-remove.module';
 import { AssignmentsModule } from './assignments/assignments.module';
-
+import { AdmissionsDischargesModule } from './admissions-discharges/admissions-discharges.module';
+import { InventoryModule } from './inventory/inventory.module';
+import { UbicationsModule } from './ubications/ubications.module';
 @Module({
   imports: [
     TypeOrmModule.forRoot({ ...ConfigDataSource }),
@@ -22,6 +24,11 @@ import { AssignmentsModule } from './assignments/assignments.module';
     MantenanceModule,
     AddRemoveModule,
     AssignmentsModule,
+    InventoryModule,
+    AdmissionsDischargesModule,
+    MantenanceModule,
+    UbicationsModule,
+
   ],
 })
 export class AppModule {}

@@ -3,10 +3,10 @@ import { AdmissionsDischargesService } from './admissions-discharges.service';
 import { AdmissionsDischargesController } from './admissions-discharges.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { admissionsDischarges } from 'cts-entities';
-import { TypesModule } from 'src/types/types.module';
+
 
 @Module({
-  imports: [TypesModule, TypeOrmModule.forFeature([admissionsDischarges])],
+  imports: [TypeOrmModule.forFeature([admissionsDischarges])],
   controllers: [AdmissionsDischargesController],
   providers: [AdmissionsDischargesService],
   exports: [AdmissionsDischargesService],

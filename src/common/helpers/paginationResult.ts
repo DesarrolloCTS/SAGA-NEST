@@ -15,7 +15,7 @@ export async function paginationResult<T extends ObjectLiteral>(
   const skip = page > 0 ? (page - 1) * limit : 0;
 
   const _options: FindManyOptions<T> = {
-    ...options,
+    ...options, 
     order: { id: 'ASC' } as unknown as FindManyOptions<T>['order'],
   };
 
