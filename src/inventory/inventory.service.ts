@@ -10,6 +10,7 @@ import {
   ErrorManager,
   findOneByTerm,
   FindOneWhitTermAndRelationDto,
+  PaginationFilterAssigmentsDto,
   PaginationRelationsDto,
   paginationResult,
   updateResult,
@@ -136,10 +137,17 @@ export class InventoryService {
     } catch (error) { }
   }
 
-  async findAll(pagination: PaginationRelationsDto) {
+  async findAll(pagination: PaginationFilterAssigmentsDto<Inventory>) {
     try {
       const option: FindManyOptions<Inventory> = {};
       if (pagination.relations)
+        if (pagination.status) {
+          option.where = {
+            ...option.where = {
+              state: pagination.status
+            }
+          };
+        }
         option.relations = {
           state: true,
           resource: {
@@ -202,7 +210,7 @@ export class InventoryService {
 
   async remove(id: number) {
     try {
-      //Disminuir stock por cada item eliminado
+
       await disminuirStock(id);
       return await deleteResult(this.inventoryRepository, id);
     } catch (error) {

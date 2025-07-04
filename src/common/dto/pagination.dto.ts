@@ -6,9 +6,8 @@ import {
   IsPositive,
 } from 'class-validator';
 import { Type } from 'class-transformer';
-
 import { IPaginateFilter, IPagination } from '../interfaces';
-
+import { STATUS_RESOURCE } from '../constants/enums';
 export class PaginationDto implements IPagination {
   @IsNumber()
   @IsPositive()
@@ -35,3 +34,11 @@ export class PaginationRelationsDto extends PaginationDto {
   relations?: boolean;
 }
 
+
+export class PaginationFilterAssigmentsDto<T>
+  extends PaginationRelationsDto
+  implements IPaginateFilter<T> {
+  @IsEnum([...Object.values(STATUS_RESOURCE)])
+  @IsOptional()
+  status?: T extends { status: infer U } ? U : never;
+}
