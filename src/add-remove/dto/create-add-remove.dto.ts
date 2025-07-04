@@ -9,8 +9,7 @@ export class CreateAddRemoveDto {
   @IsNotEmpty()
   observations: string;
 
-  @IsNotEmpty()
-  @IsPositive()
+  @IsNumber()
   idIventory: number[];
 
   @IsEnum(ADD_REMOVE)

@@ -21,6 +21,7 @@ import { MantenanceService } from 'src/mantenance/mantenance.service';
 import { AssignmentsService } from 'src/assignments/assignments.service';
 import { StateService } from 'src/state/state.service';
 import { UbicationsService } from 'src/ubications/ubications.service';
+import { aumentarStock, disminuirStock } from 'src/common/helpers/modifyStock';
 
 @Injectable()
 export class InventoryService {
@@ -125,8 +126,12 @@ export class InventoryService {
         Inventory,
       );
 
-      //Aumentar stock
-      await aumentarStock(resourceExist.id);
+      if (addRemovalExist?.type === 'ALTA') {
+        await aumentarStock(resourceExist.id);
+      } else if (addRemovalExist?.type === 'BAJA') {
+        await disminuirStock(resourceExist.id);
+      }
+
       return result;
     } catch (error) { }
   }
@@ -204,21 +209,5 @@ export class InventoryService {
       throw ErrorManager.createSignatureError(error);
     }
   }
-}
-
-async function aumentarStock(id: number) {
-  const resource = await this.resourceServices.findOne({ term: id });
-  if (resource) {
-    resource.quatity + 1;
-  }
-  return 'ok';
-}
-
-async function disminuirStock(id: number) {
-  const resource = await this.resourceServices.findOne({ term: id });
-  if (resource) {
-    resource.quatity - 1;
-  }
-  return 'ok';
 }
 

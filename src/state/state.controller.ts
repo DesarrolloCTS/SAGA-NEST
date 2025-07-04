@@ -34,6 +34,12 @@ export class StateController {
   }
 
   @MessagePattern('removeState')
+    /**
+     * Removes a state record by its ID.
+     * @param {Object} id - The ID of the state to be removed.
+     * @returns {Promise<any>} The result of the remove operation.
+     */
+
   remove(@Payload() { id }: { id: number }) {
     return this.stateService.remove(id);
   }
