@@ -18,7 +18,7 @@ export class AssignmentsService {
   create(createAssignmentDto: CreateAssignmentDto) {
     try {
       return runInTransaction(this.dataSource, async (manager) => {
-        const { name, date, hours } = createAssignmentDto;
+        const { name, date, hours, ...rest } = createAssignmentDto;
         
         const assigments=await createResult(
           this.assignmentsRepository,
@@ -29,7 +29,8 @@ export class AssignmentsService {
           },
           Assignments
         )
-        return assigments
+
+        //assi
 
       })
     }catch (error) {

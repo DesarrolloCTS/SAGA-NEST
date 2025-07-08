@@ -12,11 +12,11 @@ export class AdmissionsDischargesService {
   constructor(
     @InjectRepository(admissionsDischarges)
     private readonly admissionsDischargeRepository: Repository<admissionsDischarges>,
-    //private readonly typesService: TypesService
+
   ) { }
   async create(createAdmissionsDischargeDto: CreateAdmissionsDischargeDto) {
     try {
-      //const typeExist = await this.typesService.findOne(createAdmissionsDischargeDto.typeId);
+
       const result = await createResult(
         this.admissionsDischargeRepository,
         {

@@ -13,6 +13,8 @@ import { AssignmentsModule } from './assignments/assignments.module';
 import { AdmissionsDischargesModule } from './admissions-discharges/admissions-discharges.module';
 import { InventoryModule } from './inventory/inventory.module';
 import { UbicationsModule } from './ubications/ubications.module';
+import { InventoryHasAddModule } from './inventory-has-add/inventory-has-add.module';
+import { InventoryHasAddModule } from './inventory-has-add/inventory-has-add.module';
 @Module({
   imports: [
     TypeOrmModule.forRoot({ ...ConfigDataSource }),
@@ -28,6 +30,7 @@ import { UbicationsModule } from './ubications/ubications.module';
     AdmissionsDischargesModule,
     MantenanceModule,
     UbicationsModule,
+    InventoryHasAddModule,
 
   ],
 })
