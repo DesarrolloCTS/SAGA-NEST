@@ -14,6 +14,7 @@ import { AdmissionsDischargesModule } from './admissions-discharges/admissions-d
 import { InventoryModule } from './inventory/inventory.module';
 import { UbicationsModule } from './ubications/ubications.module';
 import { InventoryHasAddModule } from './inventory-has-add/inventory-has-add.module';
+import { InventoryHasAssigmentModule } from './inventory-has-assigment/inventory-has-assigment.module';
 import { InventoryHasAddModule } from './inventory-has-add/inventory-has-add.module';
 @Module({
   imports: [
@@ -31,6 +32,7 @@ import { InventoryHasAddModule } from './inventory-has-add/inventory-has-add.mod
     MantenanceModule,
     UbicationsModule,
     InventoryHasAddModule,
+    InventoryHasAssigmentModule,
 
   ],
 })

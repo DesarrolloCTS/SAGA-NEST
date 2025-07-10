@@ -14,16 +14,7 @@ export class AddRemoveService {
     private readonly addRemovalRepository: Repository<addRemoval>,
     private readonly dataSource: DataSource,
   ) {}
-/*************  ✨ Windsurf Command ⭐  *************/
-  /**
-   * Create a new add/remove record in the database. This method wraps the
-   * call to `createResult` in a transaction, so if there is an error, it will
-   * be rolled back.
-   *
-   * @param createAddRemoveDto - The data to be used to create the record.
-   * @returns The newly created record.
-   */
-/*******  eb3f9938-1ae3-4614-968b-74830243109f  *******/  async create(createAddRemoveDto: CreateAddRemoveDto) {
+  async create(createAddRemoveDto: CreateAddRemoveDto) {
     
     try { 
       return runInTransaction(this.dataSource, async (queryRunner) => {
