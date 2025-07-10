@@ -1,16 +1,18 @@
 import { Injectable} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { addRemoval, Inventory, inventoryHasAddRemoval} from 'cts-entities';
-import { createResult, deleteResult, ErrorManager, restoreResult } from 'src/common';
-import { QueryRunner, Repository } from 'typeorm';
+import { addRemoval, Inventory } from 'cts-entities';
+import { createResult, deleteResult, ErrorManager, FindOneWhitTermAndRelationDto, PaginationRelationsDto, paginationResult, restoreResult } from 'src/common';
+import { FindOneOptions, QueryRunner, Repository } from 'typeorm';
 import { InventoryService } from 'src/inventory/inventory.service';
+import { InventoryHasAddRemoval } from 'cts-entities';
+
 
 @Injectable()
 export class InventoryHasAddService {
 
   constructor(
-    @InjectRepository(inventoryHasAddRemoval)
-    private readonly inventoryHasAddRemoval: Repository<inventoryHasAddRemoval>,
+    @InjectRepository(InventoryHasAddRemoval)
+    private readonly inventoryHasAddRemoval: Repository<InventoryHasAddRemoval>,
   ) { }
   async create(
     idAdd: addRemoval,
@@ -27,7 +29,7 @@ export class InventoryHasAddService {
              addRemoval : idAdd,
             inventory: el,
             },
-            inventoryHasAddRemoval,
+            InventoryHasAddRemoval,
             queryRunner,
           );
         }),
@@ -44,6 +46,7 @@ export class InventoryHasAddService {
   async updateInventoryHasPosition(
     idAdd: addRemoval,
     inventory_id: Inventory[],
+    inventoryService: InventoryService,
     queryRunner: QueryRunner
   ) {
     
@@ -57,10 +60,10 @@ export class InventoryHasAddService {
           },
         });
 
-        const inventoryToDelete = inventoryHasAddRemoval.filter((inventoryHasAddRemoval) => {
+        const inventoryToDelete = inventoryHasAddRemoval.filter((el) => {
           return (
-            inventoryHasAddRemoval.inventory.deleted_at === null &&
-            !inventory_id.includes(inventoryHasAddRemoval.inventory)
+            el.inventory.deleted_at === null &&
+            !inventory_id.includes(el.inventory)
           );
         });
 
@@ -76,7 +79,7 @@ export class InventoryHasAddService {
               return inventoryHasAddRemoval.inventory === el;
             });
 
-            let result: inventoryHasAddRemoval;
+            let result;
             if (inventory) {
               if (inventory.deleted_at !== null) {
                 await restoreResult(
@@ -88,17 +91,7 @@ export class InventoryHasAddService {
 
               result = inventory;
             } else {
-              const newInventory = await InventoryService.findOne({
-                term: el.id,
-                relations: {
-                  state: true,
-                  resource: {
-                    clasification: true,
-                    model: true,
-                  },
-                },
-              });
-            
+              const newInventory = await inventoryService.findOne({ term: el.id, relations: true });
 
               result = await createResult(
                 this.inventoryHasAddRemoval,
@@ -106,7 +99,7 @@ export class InventoryHasAddService {
                   addRemoval: idAdd,
                   inventory: newInventory,
                 },
-                inventoryHasAddRemoval,
+                InventoryHasAddRemoval,
                 
               );
             }
@@ -114,17 +107,17 @@ export class InventoryHasAddService {
           }),
         );
 
-       /*  // TODO: Actualizar el staffing
-        const newPosition = result.filter(
-          (el) => !position_id.includes(el.position_id.id),
+
+        const newInventory = result.filter(
+          (el) => !inventory_id.includes(el.inventory.id),
         );
 
-        const payload: IUpdateForCahngesInEmployeeHasPositions = {
-          eHp_creates: newPosition,
-          eHp_deletes: positionsToDelete,
+        const payload = {
+          eHp_creates: newInventory,
+          eHp_deletes: inventoryToDelete,
         };
 
-       */
+
 
         return payload;
     } catch (error) {
@@ -134,5 +127,88 @@ export class InventoryHasAddService {
 
   }
 
+  async findOneByActa(
+    term,
+    deletes,
+    relations,
+    allRelations
+  ): FindOneWhitTermAndRelationDto {
+    try {
+      const options: FindOneOptions<InventoryHasAddRemoval> = {
+        where: { addRemoval: { id: +term } },
+        relations: { addRemoval: true },
+      };
+
+      if (relations || allRelations) {
+        options.relations = {
+          ...options.relations,
+          inventory: true,
+        };
+      }
+
+      if (allRelations) {
+        options.relations = {
+          ...options.relations,
+          addRemoval: true,
+          inventory: {
+            state: true,
+            resource: {
+              clasification: true,
+              model: true,
+            },
+          },
+        };
+      }
+      if (deletes) {
+        options.withDeleted = true;
+      }
+      const result = await paginationResult(this.inventoryHasAddRemoval, {
+        all: true,
+        options,
+      })
+      const data = result.data.map((el: InventoryHasAddRemoval) => {
+        return {
+          inventory: !relations
+            ? {
+              id: el.id,
+              created_at: el.created_at,
+              updated_at: el.updated_at,
+              deleted_at: el.deleted_at,
+            }
+            : el.inventory,
+        }
+
+      })
+
+      if (data.length <= 0) {
+        throw new ErrorManager({
+          message: 'NOT_FOUND',
+          code: 'NOT_FOUND',
+        })
+      }
+
+      return {
+        ...result,
+        data: {
+          addRemoval: result.data[0].addRemoval.id,
+          inventory_id: data,
+        },
+      };
+
+
+    } catch (error) {
+      console.log(error);
+      throw ErrorManager.createSignatureError(error);
+    }
+
+  }
+
+
+  async deletePositions(id: number, queryRunner?: QueryRunner) {
+    return await deleteResult(this.inventoryHasAddRemoval, id);
+  }
+
+
 
 }
+

@@ -47,12 +47,6 @@ export class AddRemoveService {
       const options: FindManyOptions<addRemoval> = {};
       if (pagination.relations) {
         options.relations = {
-          inventory: {
-            resource: {
-              clasification: true,
-              model: true
-            }
-          },
 
         };
       }
@@ -97,20 +91,12 @@ export class AddRemoveService {
     }
   }
 
-  update(updateAddRemoveDto: UpdateAddRemoveDto) {
+  async update(updateAddRemoveDto: UpdateAddRemoveDto) {
     try {
-      return runInTransaction(this.dataSource, async (queryRunner) => {
+      return await runInTransaction(this.dataSource, async (queryRunner) => {
 
-        const { id, idIventory, ...rest } = updateAddRemoveDto;
-
-        const addRemove = await this.findOne({
-          term: id,
-          relations: true
-        })
-      }
-      )
-    }
-    catch (error) {
+      })
+    } catch (error) {
       console.log(error);
     }
   } 

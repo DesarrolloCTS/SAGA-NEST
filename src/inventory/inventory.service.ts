@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { CreateInventoryDto } from './dto/create-inventory.dto';
 import { UpdateInventoryDto } from './dto/update-inventory.dto';
 import { Inventory, Ubications } from 'cts-entities';
-import { FindManyOptions, Repository } from 'typeorm';
+import { FindManyOptions, FindOneOptions, Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import {
   createResult,
@@ -92,10 +92,10 @@ export class InventoryService {
     }
   }
 
-  async findOne(id: FindOneWhitTermAndRelationDto) {
+  async findOne({ term: id, relations }: FindOneWhitTermAndRelationDto) {
     try {
-      const option: FindManyOptions<Inventory> = {};
-      if (id.relations)
+      const option: FindOneOptions<Inventory> = {};
+      if (relations)
         option.relations = {
           state: true,
           resource: {
@@ -105,7 +105,7 @@ export class InventoryService {
         };
       const result = findOneByTerm({
         repository: this.inventoryRepository,
-        term: id.term,
+        term: id,
         options: option,
       });
       return result;
