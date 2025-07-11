@@ -1,10 +1,12 @@
 import { Injectable } from '@nestjs/common';
 import { CreateAddRemoveDto } from './dto/create-add-remove.dto';
 import { UpdateAddRemoveDto } from './dto/update-add-remove.dto';
-import { createResult, deleteResult, ErrorManager, findOneByTerm, FindOneWhitTermAndRelationDto, PaginationRelationsDto, paginationResult, runInTransaction } from 'src/common';
+import { createResult, deleteResult, ErrorManager, findOneByTerm, FindOneWhitTermAndRelationDto, PaginationRelationsDto, paginationResult, runInTransaction, updateResult } from 'src/common';
 import { DataSource, FindManyOptions, FindOneOptions, Repository } from 'typeorm';
 import { addRemoval } from 'cts-entities';
 import { InjectRepository } from '@nestjs/typeorm'
+import { InventoryHasAddService } from './inventory-has-add/inventory-has-add.service';
+import { InventoryService } from 'src/inventory/inventory.service';
 
 
 @Injectable()
@@ -12,11 +14,13 @@ export class AddRemoveService {
   constructor(
     @InjectRepository(addRemoval)
     private readonly addRemovalRepository: Repository<addRemoval>,
+    private readonly inventoryHasAddRemoval: InventoryHasAddService,
+    private readonly inventoryService: InventoryService,
     private readonly dataSource: DataSource,
-  ) {}
+  ) { }
   async create(createAddRemoveDto: CreateAddRemoveDto) {
-    
-    try { 
+
+    try {
       return runInTransaction(this.dataSource, async (queryRunner) => {
 
         const { idIventory, type, ...rest } = createAddRemoveDto
@@ -38,7 +42,7 @@ export class AddRemoveService {
       console.log(error);
     }
   }
-  
+
 
   async findAll(
     pagination: PaginationRelationsDto
@@ -61,45 +65,91 @@ export class AddRemoveService {
   }
 
   findOne(
-    { term: id,
-      relations = false,
-    }: FindOneWhitTermAndRelationDto) {
+    {
+      term,
+      relations,
+      deletes,
+      allRelations,
+    }: FindOneWhitTermAndRelationDto
+  ) {
     try {
       const options: FindOneOptions<addRemoval> = {};
 
-      if (relations) {
+      if (relations || allRelations) {
         options.relations = {
-          inventory: {
-            resource: {
-              clasification: true,
-              model: true
-            }
+          inventoryHasAddRemoval: {
+            inventory: true,
           },
 
         };
       }
+
+      if (allRelations) {
+        options.relations = {
+          inventoryHasAddRemoval: {
+            inventory: {
+              state: true,
+              resource: {
+                clasification: true,
+                model: true,
+              },
+            },
+          },
+        };
+      }
+      if (deletes) {
+        options.withDeleted = true;
+      }
+
       const result = findOneByTerm({
         repository: this.addRemovalRepository,
-        term: id,
+        term,
         options,
       });
-
       return result;
+    }
 
-    } catch (error) {
-
+    catch (error) {
+      console.log(error);
+      throw ErrorManager.createSignatureError(error);
     }
   }
 
   async update(updateAddRemoveDto: UpdateAddRemoveDto) {
     try {
+      const { id, idIventory, type, ...rest } = updateAddRemoveDto
       return await runInTransaction(this.dataSource, async (queryRunner) => {
+        const { inventoryHasAddRemoval, ...addRemoval } = await this.findOne({
+          term: id,
+          relations: true
+        })
+        if (idIventory) {
+          await this.inventoryHasAddRemoval.updateInventoryHasPosition(
+            {
+              idAdd: { inventoryHasAddRemoval, ...addRemoval },
+              inventory_id: idIventory,
+              inventoryService: this.inventoryService,
+              queryRunner,
+            });
+        }
 
+        Object.assign(addRemoval, rest);
+
+        const result = await updateResult(
+          this.addRemovalRepository,
+          id,
+          {
+            ...addRemoval
+          },
+          queryRunner
+        );
+
+        return result
       })
     } catch (error) {
       console.log(error);
     }
-  } 
+  }
 
   remove(id: number) {
     try {

@@ -22,7 +22,7 @@ export class CreateInventoryDto {
 
   @IsEnum(STATUS_RESOURCE)
   @IsNotEmpty()
-  status: string
+  status: STATUS_RESOURCE
 
 
   @IsNumber()

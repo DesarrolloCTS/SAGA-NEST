@@ -1,5 +1,7 @@
-import { IsEnum, IsNotEmpty, IsNumber, IsPositive, IsString } from "class-validator";
+import { ArrayNotEmpty, IsArray, IsEnum, IsNotEmpty, IsNumber, IsPositive, IsString, ValidateNested } from "class-validator";
 import { ADD_REMOVE } from "../../common/constants/enums";
+
+
 export class CreateAddRemoveDto {
   @IsString()
   @IsNotEmpty()    
@@ -9,7 +11,11 @@ export class CreateAddRemoveDto {
   @IsNotEmpty()
   observations: string;
 
-  @IsNumber()
+
+  @IsArray()
+  @ArrayNotEmpty()
+  @IsNumber({}, { each: true })
+  @IsPositive({ each: true })
   idIventory: number[];
 
   @IsEnum(ADD_REMOVE)
