@@ -1,71 +1,85 @@
-import { Injectable } from '@nestjs/common';
+import { forwardRef, Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { addRemoval, Inventory } from 'cts-entities';
-import { createResult, deleteResult, ErrorManager, FindOneWhitTermAndRelationDto, PaginationRelationsDto, paginationResult, restoreResult } from 'src/common';
+import { addRemoval, InventoryHasAddRemoval } from 'cts-entities';
 import { FindOneOptions, QueryRunner, Repository } from 'typeorm';
+import {
+  createResult,
+  deleteResult,
+  ErrorManager,
+  FindOneWhitTermAndRelationDto,
+  paginationResult,
+  restoreResult,
+} from 'src/common';
 import { InventoryService } from 'src/inventory/inventory.service';
-import { InventoryHasAddRemoval } from 'cts-entities';
-
+import { CreateAddRemoveDto } from '../inventory-has-add/dto/create-inventory-has-add-remove.dto';
+import { ResourcesService } from '../../resources/resources.service';
+import { AddRemoveService } from '../add-remove.service';
 
 @Injectable()
 export class InventoryHasAddService {
-
   constructor(
     @InjectRepository(InventoryHasAddRemoval)
-    private readonly inventoryHasAddRemoval: Repository<InventoryHasAddRemoval>,
-  ) { }
+    private readonly inventoryHasAddRemovalRepository: Repository<InventoryHasAddRemoval>,
+    private readonly resoruceService: ResourcesService,
+
+    @Inject(forwardRef(() => AddRemoveService))
+    private readonly addRemoveService: AddRemoveService,
+  ) {}
   async create(
-    idAdd: addRemoval,
-    inventory: Inventory[],
-    queryRunner: QueryRunner
+    acta_id: number,
+    createDto: CreateAddRemoveDto,
+    inventoryService: InventoryService,
+    queryRunner: QueryRunner,
   ) {
     try {
+      const { resource: _resource, ...rest } = createDto;
 
-      const result = await Promise.all(
-        inventory.map(async (el) => {
-          return await createResult(
-            this.inventoryHasAddRemoval,
-            {
-              addRemoval: idAdd,
-              inventory: el,
-            },
-            InventoryHasAddRemoval,
-            queryRunner,
-          );
-        }),
+      const addRemoval = await this.addRemoveService.findOne({ term: acta_id });
+
+      const resource = await this.resoruceService.findOneByName(_resource);
+
+      const inventoryCrated = await createResult(
+        this.inventoryHasAddRemovalRepository,
+        {
+          addRemoval,
+          inventory: {
+            idName: rest.idName,
+            serialNumber: rest.serialNumber,
+            resource,
+          },
+        },
+        InventoryHasAddRemoval,
+        queryRunner,
       );
 
-      return result;
+      return inventoryCrated;
     } catch (error) {
       console.log(error);
       throw ErrorManager.createSignatureError(error);
     }
-
   }
 
-  async updateInventoryHasPosition(
-    {
-      idAdd,
-      inventory_id,
-      inventoryService,
-      queryRunner,
-    }: {
-      idAdd: addRemoval;
-      inventory_id: number[];
-      inventoryService: InventoryService;
-      queryRunner: QueryRunner;
-    },
-  ) {
-
+  async updateInventoryHasPosition({
+    idAdd,
+    inventory_id,
+    inventoryService,
+    queryRunner,
+  }: {
+    idAdd: addRemoval;
+    inventory_id: number[];
+    inventoryService: InventoryService;
+    queryRunner: QueryRunner;
+  }) {
     try {
-      const inventoryHasAddRemoval = await this.inventoryHasAddRemoval.find({
-        where: { addRemoval: { id: idAdd.id } },
-        withDeleted: true,
-        relations: {
-          inventory: true,
-          addRemoval: true,
-        },
-      });
+      const inventoryHasAddRemoval =
+        await this.inventoryHasAddRemovalRepository.find({
+          where: { addRemoval: { id: idAdd.id } },
+          withDeleted: true,
+          relations: {
+            inventory: true,
+            addRemoval: true,
+          },
+        });
 
       const inventoryToDelete = inventoryHasAddRemoval.filter((el) => {
         return (
@@ -76,39 +90,47 @@ export class InventoryHasAddService {
 
       await Promise.all(
         inventoryToDelete.map(async ({ id }) => {
-          await deleteResult(this.inventoryHasAddRemoval, id, queryRunner);
+          await deleteResult(
+            this.inventoryHasAddRemovalRepository,
+            id,
+            queryRunner,
+          );
         }),
       );
 
       return await Promise.all(
         inventory_id.map(async (el) => {
-          const inventory = inventoryHasAddRemoval.find((inventoryHasAddRemoval) => {
-            return inventoryHasAddRemoval.inventory.id === el;
-          });
+          const inventory = inventoryHasAddRemoval.find(
+            (inventoryHasAddRemoval) => {
+              return inventoryHasAddRemoval.inventory.id === el;
+            },
+          );
 
           let result;
           if (inventory) {
             if (inventory.deleted_at !== null) {
               await restoreResult(
-                this.inventoryHasAddRemoval,
+                this.inventoryHasAddRemovalRepository,
                 inventory.id,
-                queryRunner
+                queryRunner,
               );
             }
 
             result = inventory;
           } else {
-            const newInventory = await inventoryService.findOne({ term: el, relations: true });
+            const newInventory = await inventoryService.findOne({
+              term: el,
+              relations: true,
+            });
 
             result = await createResult(
-              this.inventoryHasAddRemoval,
+              this.inventoryHasAddRemovalRepository,
               {
                 addRemoval: idAdd,
                 inventory: newInventory,
-
               },
               InventoryHasAddRemoval,
-              queryRunner
+              queryRunner,
             );
           }
           return result;
@@ -118,15 +140,14 @@ export class InventoryHasAddService {
       console.log(error);
       throw ErrorManager.createSignatureError(error);
     }
-
   }
 
-  async findOneByActa(
+  async findOneByActa({
     term,
     deletes,
     relations,
-    allRelations
-  ) {
+    allRelations,
+  }: FindOneWhitTermAndRelationDto) {
     try {
       const options: FindOneOptions<InventoryHasAddRemoval> = {
         where: { addRemoval: { id: +term } },
@@ -153,32 +174,37 @@ export class InventoryHasAddService {
           },
         };
       }
+
       if (deletes) {
         options.withDeleted = true;
       }
-      const result = await paginationResult(this.inventoryHasAddRemoval, {
-        all: true,
-        options,
-      })
+
+      const result = await paginationResult(
+        this.inventoryHasAddRemovalRepository,
+        {
+          all: true,
+          options,
+        },
+      );
+
       const data = result.data.map((el: InventoryHasAddRemoval) => {
         return {
           inventory: !relations
             ? {
-              id: el.id,
-              created_at: el.created_at,
-              updated_at: el.updated_at,
-              deleted_at: el.deleted_at,
-            }
+                id: el.id,
+                created_at: el.created_at,
+                updated_at: el.updated_at,
+                deleted_at: el.deleted_at,
+              }
             : el.inventory,
-        }
-
-      })
+        };
+      });
 
       if (data.length <= 0) {
         throw new ErrorManager({
           message: 'NOT_FOUND',
           code: 'NOT_FOUND',
-        })
+        });
       }
 
       return {
@@ -188,21 +214,13 @@ export class InventoryHasAddService {
           inventory_id: data,
         },
       };
-
-
     } catch (error) {
       console.log(error);
       throw ErrorManager.createSignatureError(error);
     }
-
   }
-
 
   async deletePositions(id: number, queryRunner?: QueryRunner) {
-    return await deleteResult(this.inventoryHasAddRemoval, id);
+    return await deleteResult(this.inventoryHasAddRemovalRepository, id);
   }
-
-
-
 }
-

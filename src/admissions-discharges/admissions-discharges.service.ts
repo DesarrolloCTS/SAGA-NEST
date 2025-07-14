@@ -34,7 +34,7 @@ export class AdmissionsDischargesService {
   async findAll(pagination: PaginationRelationsDto) {
     try {
       const option: FindManyOptions<admissionsDischarges> = {};
-      if (pagination.relations) option.relations = {
+      /*  if (pagination.relations) option.relations = {
         inventory: {
           resource: {
             clasification: true,
@@ -42,11 +42,14 @@ export class AdmissionsDischargesService {
           }
         }
 
-      };
-      const result = await paginationResult(this.admissionsDischargeRepository, {
-        ...pagination,
-        options: option,
-      });
+      }; */
+      const result = await paginationResult(
+        this.admissionsDischargeRepository,
+        {
+          ...pagination,
+          options: option,
+        },
+      );
       return result;
     }
     catch (error) {
@@ -56,20 +59,20 @@ export class AdmissionsDischargesService {
 
   async findOne(id: FindOneWhitTermAndRelationDto) {
     try {
-      const option: FindManyOptions<admissionsDischarges> = {}
-      if (id.relations) option.relations = {
+      const option: FindManyOptions<admissionsDischarges> = {};
+      /*   if (id.relations) option.relations = {
         inventory: {
           resource: {
             clasification: true,
             model: true
           }
         }
-      }
+      } */
       const result = findOneByTerm({
         repository: this.admissionsDischargeRepository,
         term: id.term,
-        options: option
-      })
+        options: option,
+      });
     }
     catch (error) {
       throw ErrorManager.createSignatureError(error);

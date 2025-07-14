@@ -42,15 +42,7 @@ export class AssignmentsService {
   findAll(pagination: PaginationRelationsDto) {
     try {
       const options: FindManyOptions<Assignments> = {};
-      if (pagination.relations) options.relations = {
-        inventory: {
-          resource: {
-            clasification: true,
-            model: true
-          }
-        }
-       
-      };
+      if (pagination.relations) options.relations = {};
       const result = paginationResult(this.assignmentsRepository, {
         ...pagination,
         options
@@ -65,21 +57,13 @@ export class AssignmentsService {
   findOne({ term: id, relations }: FindOneWhitTermAndRelationDto) {
     try {
       const options: FindOneOptions<Assignments> = {};
-      if (relations) options.relations = {
-        inventory: {
-          resource: {
-            clasification: true,
-            model: true
-          }
-        }}
-      
+
       const result = findOneByTerm({
         repository: this.assignmentsRepository,
         term: id,
         options,
       });
       return result;
-
     } catch (error) {
       console.log(error);
       throw ErrorManager.createSignatureError(error);   

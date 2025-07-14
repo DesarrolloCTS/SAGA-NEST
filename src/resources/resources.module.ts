@@ -9,9 +9,13 @@ import { ModelsModule } from '../models/models.module';
 import { Resource } from 'cts-entities';
 
 @Module({
-  imports: [ClasificationsModule, ModelsModule,TypeOrmModule.forFeature([Resource]) ],
+  imports: [
+    ClasificationsModule,
+    ModelsModule,
+    TypeOrmModule.forFeature([Resource]),
+  ],
   controllers: [ResourcesController],
   providers: [ResourcesService],
-  exports: [ResourcesService]
+  exports: [ResourcesService, ClasificationsModule, ModelsModule],
 })
 export class ResourcesModule {}

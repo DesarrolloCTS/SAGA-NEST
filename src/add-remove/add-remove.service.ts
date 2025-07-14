@@ -1,77 +1,80 @@
-import { Injectable } from '@nestjs/common';
+import { forwardRef, Inject, Injectable } from '@nestjs/common';
 import { CreateAddRemoveDto } from './dto/create-add-remove.dto';
 import { UpdateAddRemoveDto } from './dto/update-add-remove.dto';
-import { createResult, deleteResult, ErrorManager, findOneByTerm, FindOneWhitTermAndRelationDto, PaginationRelationsDto, paginationResult, runInTransaction, updateResult } from 'src/common';
-import { DataSource, FindManyOptions, FindOneOptions, Repository } from 'typeorm';
+import {
+  createResult,
+  deleteResult,
+  ErrorManager,
+  findOneByTerm,
+  FindOneWhitTermAndRelationDto,
+  PaginationRelationsDto,
+  paginationResult,
+  runInTransaction,
+  updateResult,
+} from 'src/common';
+import {
+  DataSource,
+  FindManyOptions,
+  FindOneOptions,
+  Repository,
+} from 'typeorm';
 import { addRemoval } from 'cts-entities';
-import { InjectRepository } from '@nestjs/typeorm'
+import { InjectRepository } from '@nestjs/typeorm';
 import { InventoryHasAddService } from './inventory-has-add/inventory-has-add.service';
 import { InventoryService } from 'src/inventory/inventory.service';
-
 
 @Injectable()
 export class AddRemoveService {
   constructor(
     @InjectRepository(addRemoval)
     private readonly addRemovalRepository: Repository<addRemoval>,
+    @Inject(forwardRef(() => InventoryHasAddService))
     private readonly inventoryHasAddRemoval: InventoryHasAddService,
+
     private readonly inventoryService: InventoryService,
     private readonly dataSource: DataSource,
-  ) { }
+  ) {}
   async create(createAddRemoveDto: CreateAddRemoveDto) {
-
     try {
       return runInTransaction(this.dataSource, async (queryRunner) => {
-
-        const { idIventory, type, ...rest } = createAddRemoveDto
+        const { idIventory, type, ...rest } = createAddRemoveDto;
 
         const addRemove = await createResult(
           this.addRemovalRepository,
           {
             ...createAddRemoveDto,
-            type: createAddRemoveDto.type
+            type: createAddRemoveDto.type,
           },
           addRemoval,
           queryRunner,
-        )
-        return addRemove
-      }
-      )
-    }
-    catch (error) {
+        );
+        return addRemove;
+      });
+    } catch (error) {
       console.log(error);
     }
   }
 
-
-  async findAll(
-    pagination: PaginationRelationsDto
-  ) {
+  async findAll(pagination: PaginationRelationsDto) {
     try {
       const options: FindManyOptions<addRemoval> = {};
       if (pagination.relations) {
-        options.relations = {
-
-        };
+        options.relations = {};
       }
 
       return await paginationResult(this.addRemovalRepository, {
         ...pagination,
         options,
-      })
-    } catch (error) {
-
-    }
+      });
+    } catch (error) {}
   }
 
-  findOne(
-    {
-      term,
-      relations,
-      deletes,
-      allRelations,
-    }: FindOneWhitTermAndRelationDto
-  ) {
+  async findOne({
+    term,
+    relations,
+    deletes,
+    allRelations,
+  }: FindOneWhitTermAndRelationDto) {
     try {
       const options: FindOneOptions<addRemoval> = {};
 
@@ -80,7 +83,6 @@ export class AddRemoveService {
           inventoryHasAddRemoval: {
             inventory: true,
           },
-
         };
       }
 
@@ -101,15 +103,13 @@ export class AddRemoveService {
         options.withDeleted = true;
       }
 
-      const result = findOneByTerm({
+      const result = await findOneByTerm({
         repository: this.addRemovalRepository,
         term,
         options,
       });
       return result;
-    }
-
-    catch (error) {
+    } catch (error) {
       console.log(error);
       throw ErrorManager.createSignatureError(error);
     }
@@ -117,20 +117,19 @@ export class AddRemoveService {
 
   async update(updateAddRemoveDto: UpdateAddRemoveDto) {
     try {
-      const { id, idIventory, type, ...rest } = updateAddRemoveDto
+      const { id, idIventory, type, ...rest } = updateAddRemoveDto;
       return await runInTransaction(this.dataSource, async (queryRunner) => {
         const { inventoryHasAddRemoval, ...addRemoval } = await this.findOne({
           term: id,
-          relations: true
-        })
+          relations: true,
+        });
         if (idIventory) {
-          await this.inventoryHasAddRemoval.updateInventoryHasPosition(
-            {
-              idAdd: { inventoryHasAddRemoval, ...addRemoval },
-              inventory_id: idIventory,
-              inventoryService: this.inventoryService,
-              queryRunner,
-            });
+          await this.inventoryHasAddRemoval.updateInventoryHasPosition({
+            idAdd: { inventoryHasAddRemoval, ...addRemoval },
+            inventory_id: idIventory,
+            inventoryService: this.inventoryService,
+            queryRunner,
+          });
         }
 
         Object.assign(addRemoval, rest);
@@ -139,13 +138,13 @@ export class AddRemoveService {
           this.addRemovalRepository,
           id,
           {
-            ...addRemoval
+            ...addRemoval,
           },
-          queryRunner
+          queryRunner,
         );
 
-        return result
-      })
+        return result;
+      });
     } catch (error) {
       console.log(error);
     }
@@ -154,8 +153,7 @@ export class AddRemoveService {
   remove(id: number) {
     try {
       return deleteResult(this.addRemovalRepository, id);
-    }
-    catch (error) {
+    } catch (error) {
       console.log(error);
       throw ErrorManager.createSignatureError(error);
     }

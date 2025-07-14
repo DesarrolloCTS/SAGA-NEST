@@ -1,10 +1,11 @@
 import { Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { FindManyOptions, FindOneOptions, Repository } from 'typeorm';
+import { Model } from 'cts-entities';
+
 import { CreateModelDto } from './dto/create-model.dto';
 import { UpdateModelDto } from './dto/update-model.dto';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Model } from 'cts-entities';
-import { FindManyOptions, FindOneOptions, Repository } from 'typeorm';
-import { createResult, deleteResult, ErrorManager, findOneByTerm, FindOneWhitTermAndRelationDto, PaginationDto, PaginationRelationsDto, paginationResult, updateResult } from 'src/common';
+import { createResult, deleteResult, ErrorManager, findOneByTerm, FindOneWhitTermAndRelationDto, PaginationRelationsDto, paginationResult, updateResult } from 'src/common';
 import { BrandsService } from 'src/brands/brands.service';
 
 @Injectable()
@@ -47,12 +48,15 @@ export class ModelsService {
   async findOne(id: FindOneWhitTermAndRelationDto) {
     try {
       const options: FindOneOptions<Model> = {};
+
       if (id.relations) options.relations = { brand: true };
+
       const result = await findOneByTerm({
         repository: this.modelRepository,
         term: id.term,
         options,
       });
+
       return result;
     } catch (error) {
       throw ErrorManager.createSignatureError(error);

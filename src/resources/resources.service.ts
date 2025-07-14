@@ -32,7 +32,7 @@ export class ResourcesService {
       );
 
       const modelExist = await this.modelsService.findOne({
-        term: createResourceDto.modelId
+        term: createResourceDto.modelId,
       });
 
       const result = await createResult(
@@ -59,6 +59,41 @@ export class ResourcesService {
       return result;
     } catch (error) {
       console.log(error);
+      throw ErrorManager.createSignatureError(error);
+    }
+  }
+
+  async findOneByName({
+    name,
+    clasificationId,
+    description,
+    especifications,
+    quatity,
+    modelId,
+  }: CreateResourceDto) {
+    try {
+      const result = await this.resourceRepository.findOne({
+        where: {
+          name,
+          clasification: { id: clasificationId },
+          model: { id: modelId },
+        },
+        relations: { clasification: true, model: true },
+      });
+
+      if (!result) {
+        return await this.create({
+          name,
+          clasificationId,
+          modelId,
+          description,
+          quatity,
+          especifications,
+        });
+      }
+
+      return result;
+    } catch (error) {
       throw ErrorManager.createSignatureError(error);
     }
   }
@@ -93,7 +128,10 @@ export class ResourcesService {
         });
         resource.model = modelExist;
       }
-      if (res.clasificationId && res.clasificationId !== resource.clasification.id) {
+      if (
+        res.clasificationId &&
+        res.clasificationId !== resource.clasification.id
+      ) {
         const claExist = await this.clasificationsService.findOne(
           res.clasificationId,
         );
