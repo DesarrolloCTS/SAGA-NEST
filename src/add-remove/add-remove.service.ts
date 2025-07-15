@@ -20,8 +20,6 @@ import {
 } from 'typeorm';
 import { addRemoval } from 'cts-entities';
 import { InjectRepository } from '@nestjs/typeorm';
-import { InventoryHasAddService } from './inventory-has-add/inventory-has-add.service';
-import { InventoryService } from 'src/inventory/inventory.service';
 
 @Injectable()
 export class AddRemoveService {
@@ -81,7 +79,6 @@ export class AddRemoveService {
           },
         };
       }
-
       if (allRelations) {
         options.relations = {
           inventoryHasAddRemoval: {
