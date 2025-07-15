@@ -1,4 +1,4 @@
-import { forwardRef, Inject, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { CreateAddRemoveDto } from './dto/create-add-remove.dto';
 import { UpdateAddRemoveDto } from './dto/update-add-remove.dto';
 import {
@@ -28,10 +28,6 @@ export class AddRemoveService {
   constructor(
     @InjectRepository(addRemoval)
     private readonly addRemovalRepository: Repository<addRemoval>,
-    @Inject(forwardRef(() => InventoryHasAddService))
-    private readonly inventoryHasAddRemoval: InventoryHasAddService,
-
-    private readonly inventoryService: InventoryService,
     private readonly dataSource: DataSource,
   ) {}
   async create(createAddRemoveDto: CreateAddRemoveDto) {
@@ -123,14 +119,14 @@ export class AddRemoveService {
           term: id,
           relations: true,
         });
-        if (idIventory) {
-          await this.inventoryHasAddRemoval.updateInventoryHasPosition({
-            idAdd: { inventoryHasAddRemoval, ...addRemoval },
-            inventory_id: idIventory,
-            inventoryService: this.inventoryService,
-            queryRunner,
-          });
-        }
+        // if (idIventory) {
+        //   await this.inventoryHasAddRemoval.updateInventoryHasPosition({
+        //     idAdd: { inventoryHasAddRemoval, ...addRemoval },
+        //     inventory_id: idIventory,
+        //     inventoryService: this.inventoryService,
+        //     queryRunner,
+        //   });
+        // }
 
         Object.assign(addRemoval, rest);
 

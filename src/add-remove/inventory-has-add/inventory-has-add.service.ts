@@ -1,7 +1,8 @@
-import { forwardRef, Inject, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { addRemoval, InventoryHasAddRemoval } from 'cts-entities';
 import { FindOneOptions, QueryRunner, Repository } from 'typeorm';
+
 import {
   createResult,
   deleteResult,
@@ -21,8 +22,6 @@ export class InventoryHasAddService {
     @InjectRepository(InventoryHasAddRemoval)
     private readonly inventoryHasAddRemovalRepository: Repository<InventoryHasAddRemoval>,
     private readonly resoruceService: ResourcesService,
-
-    @Inject(forwardRef(() => AddRemoveService))
     private readonly addRemoveService: AddRemoveService,
   ) {}
   async create(
