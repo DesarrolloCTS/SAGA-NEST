@@ -1,10 +1,19 @@
-import { PartialType } from '@nestjs/mapped-types';
-import { CreateAddRemoveDto } from './create-inventory-has-add-remove.dto';
-import { IsNotEmpty, IsNumber, IsPositive } from 'class-validator';
+import { OmitType, PartialType } from '@nestjs/mapped-types';
+import { CreateHasAddRemoveDto } from './create-inventory-has-add-remove.dto';
+import {
+  ArrayNotEmpty,
+  IsNotEmpty,
+  IsNumber,
+  IsPositive,
+} from 'class-validator';
 
-export class UpdateAddRemoveDto extends PartialType(CreateAddRemoveDto) {
+export class UpdateHasAddRemoveDto {
   @IsPositive()
   @IsNotEmpty()
   @IsNumber()
-  id: number;
+  idActa: number;
+
+  @IsNumber({}, { each: true })
+  @ArrayNotEmpty()
+  itemId: number[];
 }

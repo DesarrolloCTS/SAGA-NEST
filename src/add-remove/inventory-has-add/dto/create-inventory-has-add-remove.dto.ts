@@ -1,22 +1,29 @@
 
-import { IsNumber, IsString, ValidateNested } from "class-validator"
-import { CreateResourceDto as createResourceDto } from "../../../resources/dto/create-resource.dto"
-import { Type } from "class-transformer"
+import {
+  IsNotEmpty,
+  IsNumber,
+  IsPositive,
+  IsString,
+  ValidateNested,
+} from 'class-validator';
+import { CreateResourceDto as createResourceDto } from '../../../resources/dto/create-resource.dto';
+import { Type } from 'class-transformer';
 
-export class CreateAddRemoveDto {
-
+export class CreateHasAddRemoveDto {
   // Resource
   @ValidateNested()
   @Type(() => createResourceDto)
-  resource: createResourceDto
-
+  resource: createResourceDto;
+  //Id del acta
+  @IsNumber()
+  @IsPositive()
+  @IsNotEmpty()
+  idActa: number;
   // Inventory
   @IsString()
-  idName: string
+  idName: string;
   @IsString()
-  serialNumber: string
+  serialNumber: string;
   @IsNumber()
-  ubications: number
-
- 
+  ubications: number;
 }

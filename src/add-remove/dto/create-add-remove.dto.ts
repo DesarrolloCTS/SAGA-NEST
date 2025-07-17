@@ -4,26 +4,22 @@ import { ADD_REMOVE } from "../../common/constants/enums";
 
 export class CreateAddRemoveDto {
   @IsString()
-  @IsNotEmpty()    
+  @IsNotEmpty()
   motive: string;
 
   @IsString()
   @IsNotEmpty()
   observations: string;
 
-
   @IsArray()
-  @ArrayNotEmpty()
   @IsNumber({}, { each: true })
-  @IsPositive({ each: true })
   idIventory: number[];
 
   @IsEnum(ADD_REMOVE)
-  type: ADD_REMOVE
+  type: ADD_REMOVE;
 
   @IsNumber()
   @IsNotEmpty()
   @IsPositive()
-  ubicationId: number
-
+  ubicationId: number;
 }

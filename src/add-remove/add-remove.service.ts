@@ -110,32 +110,21 @@ export class AddRemoveService {
 
   async update(updateAddRemoveDto: UpdateAddRemoveDto) {
     try {
-      const { id, idIventory, type, ...rest } = updateAddRemoveDto;
+      const { id, ...rest } = updateAddRemoveDto;
       return await runInTransaction(this.dataSource, async (queryRunner) => {
-        const { inventoryHasAddRemoval, ...addRemoval } = await this.findOne({
+        const addRemoval = await this.findOne({
           term: id,
           relations: true,
         });
-        // if (idIventory) {
-        //   await this.inventoryHasAddRemoval.updateInventoryHasPosition({
-        //     idAdd: { inventoryHasAddRemoval, ...addRemoval },
-        //     inventory_id: idIventory,
-        //     inventoryService: this.inventoryService,
-        //     queryRunner,
-        //   });
-        // }
 
         Object.assign(addRemoval, rest);
 
         const result = await updateResult(
           this.addRemovalRepository,
           id,
-          {
-            ...addRemoval,
-          },
+          addRemoval,
           queryRunner,
         );
-
         return result;
       });
     } catch (error) {
