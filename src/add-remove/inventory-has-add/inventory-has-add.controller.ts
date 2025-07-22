@@ -1,7 +1,7 @@
 import { Controller } from '@nestjs/common';
 import { MessagePattern, Payload } from '@nestjs/microservices';
-import { InventoryHasAddService} from './inventory-has-add/inventory-has-add.service';
-import { CreateHasAddRemoveDto}  from './inventory-has-add/dto/create-inventory-has-add-remove.dto';
+import { InventoryHasAddService} from './inventory-has-add.service';
+import { CreateHasAddRemoveDto}  from './dto/create-inventory-has-add-remove.dto';
 import { FindOneWhitTermAndRelationDto } from 'src/common';
 
 @Controller()

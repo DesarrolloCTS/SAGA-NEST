@@ -11,9 +11,9 @@ export class CreateAddRemoveDto {
   @IsNotEmpty()
   observations: string;
 
-  @IsArray()
+  /*   @IsArray()
   @IsNumber({}, { each: true })
-  idIventory: number[];
+  idIventory: number[]; */
 
   @IsEnum(ADD_REMOVE)
   type: ADD_REMOVE;

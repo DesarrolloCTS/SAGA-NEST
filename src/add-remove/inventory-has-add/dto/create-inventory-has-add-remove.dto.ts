@@ -1,5 +1,6 @@
 
 import {
+  IsEnum,
   IsNotEmpty,
   IsNumber,
   IsPositive,
@@ -8,9 +9,11 @@ import {
 } from 'class-validator';
 import { CreateResourceDto as createResourceDto } from '../../../resources/dto/create-resource.dto';
 import { Type } from 'class-transformer';
+import { STATUS_RESOURCE } from 'src/common';
 
 export class CreateHasAddRemoveDto {
   // Resource
+
   @ValidateNested()
   @Type(() => createResourceDto)
   resource: createResourceDto;
@@ -26,4 +29,9 @@ export class CreateHasAddRemoveDto {
   serialNumber: string;
   @IsNumber()
   ubications: number;
+  @IsEnum(STATUS_RESOURCE)
+  @IsNotEmpty()
+  status: STATUS_RESOURCE;
+  @IsNumber()
+  user_id: number;
 }

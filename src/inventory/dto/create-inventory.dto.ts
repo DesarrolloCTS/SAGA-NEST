@@ -10,26 +10,18 @@ export class CreateInventoryDto {
   serialNumber: string;
 
   @IsNumber()
-  @IsNotEmpty()
-  @IsPositive()
-  user_id: number
+  user_id: number;
 
   @IsNumber()
-  stateId: number
+  stateId: number;
 
   @IsNumber()
-  resourceId: number
+  resourceId: number;
 
   @IsEnum(STATUS_RESOURCE)
   @IsNotEmpty()
-  status: STATUS_RESOURCE
-
+  status: STATUS_RESOURCE;
 
   @IsNumber()
-  ubications: number
-
-
-
-
-
+  ubications: number;
 }
