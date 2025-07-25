@@ -1,9 +1,9 @@
-import { IsBoolean, IsNotEmpty, IsOptional, IsString } from 'class-validator';
 import { OmitType } from '@nestjs/mapped-types';
+import { IsBoolean, IsNotEmpty, IsOptional, IsString } from 'class-validator';
 import { Type } from 'class-transformer';
 
 import { IFindOne } from '../interfaces';
-import { ToBoolean } from '../decorator/boolean';
+import { ToBoolean } from '../decorator';
 
 export class FindOneWhitTermAndRelationDto implements IFindOne {
   @IsString()
@@ -29,7 +29,10 @@ export class FindOneWhitTermAndRelationDto implements IFindOne {
   allRelations?: boolean = false;
 }
 
-export class FindOneDeleteRelationsDto {
+export class FindOneDeleteRelationsDto extends OmitType(
+  FindOneWhitTermAndRelationDto,
+  ['term'] as const,
+) {
   @IsBoolean()
   @IsOptional()
   @Type(() => Boolean)
@@ -47,7 +50,6 @@ export class FindOneDto extends OmitType(FindOneWhitTermAndRelationDto, [
   'relations',
   'deletes',
 ] as const) {
-
   @IsString()
   @IsNotEmpty()
   term: string | number;
@@ -55,9 +57,8 @@ export class FindOneDto extends OmitType(FindOneWhitTermAndRelationDto, [
 
 export class FindOneRelationsDto extends OmitType(
   FindOneWhitTermAndRelationDto,
-  ['deletes'] as const,
+  ['term', 'deletes'] as const,
 ) {
-
   @IsBoolean()
   @IsOptional()
   @Type(() => Boolean)
@@ -66,6 +67,7 @@ export class FindOneRelationsDto extends OmitType(
 }
 
 export class FindOneDeleteDto extends OmitType(FindOneWhitTermAndRelationDto, [
+  'term',
   'relations',
 ] as const) {
   @IsBoolean()

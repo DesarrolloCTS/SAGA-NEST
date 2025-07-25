@@ -65,8 +65,8 @@ export class AddRemoveService {
 
   async findOne({
     term,
-    relations,
     deletes,
+    relations,
     allRelations,
   }: FindOneWhitTermAndRelationDto) {
     try {

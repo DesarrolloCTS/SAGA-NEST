@@ -88,7 +88,7 @@ export class InventoryHasAddService {
         relations: { addRemoval: true },
       };
 
-      if (relations || allRelations) {
+      if (relations) {
         options.relations = {
           ...options.relations,
           inventory: true,
@@ -98,7 +98,6 @@ export class InventoryHasAddService {
       if (allRelations) {
         options.relations = {
           ...options.relations,
-          addRemoval: true,
           inventory: {
             state: true,
             resource: {
@@ -132,7 +131,7 @@ export class InventoryHasAddService {
               }
             : el.inventory,
         };
-      });
+      }); 
 
       if (data.length <= 0) {
         throw new ErrorManager({

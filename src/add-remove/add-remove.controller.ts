@@ -20,8 +20,16 @@ export class AddRemoveController {
   }
 
   @MessagePattern('findOneAddRemove')
-  findOne(@Payload() findOne: FindOneWhitTermAndRelationDto) {
-    return this.addRemoveService.findOne(findOne);
+  findOne(
+    @Payload()
+    { term, relations, allRelations, deletes }: any,
+  ) {
+    return this.addRemoveService.findOne({
+      term,
+      relations,
+      deletes,
+      allRelations,
+    });
   }
 
   @MessagePattern('updateAddRemove')

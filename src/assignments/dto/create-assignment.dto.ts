@@ -1,17 +1,23 @@
-import { IsNotEmpty, IsNumber, IsPositive, IsString } from "class-validator"
-
+import {
+  IsEnum,
+  IsNotEmpty,
+  IsNumber,
+  IsPositive,
+  IsString,
+} from 'class-validator';
+import { ASSIGNMENT_STATUS } from 'src/common/constants/sagaEnums';
 export class CreateAssignmentDto {
   @IsString()
   @IsNotEmpty()
-  name: string
+  name: string;
   @IsString()
   @IsNotEmpty()
-  date: string
+  date: string;
   @IsString()
   @IsNotEmpty()
-  hours: string
-  
-
-
-
+  hours: string;
+  @IsString()
+  accessories: string;
+  @IsEnum(ASSIGNMENT_STATUS)
+  type: ASSIGNMENT_STATUS;
 }

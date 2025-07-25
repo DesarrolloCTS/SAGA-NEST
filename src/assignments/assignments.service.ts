@@ -13,81 +13,110 @@ export class AssignmentsService {
     @InjectRepository(Assignments)
     private readonly assignmentsRepository: Repository<Assignments>,
     private readonly dataSource: DataSource,
-
-  ) { } z
+  ) {}
   create(createAssignmentDto: CreateAssignmentDto) {
     try {
       return runInTransaction(this.dataSource, async (manager) => {
-        const { name, date, hours, ...rest } = createAssignmentDto;
-        
-        const assigments=await createResult(
+        const { name, date, hours, type, accessories } = createAssignmentDto;
+        return await createResult(
           this.assignmentsRepository,
           {
             name,
             date,
-            hours
+            hours,
+            type,
+            accessories,
           },
-          Assignments
-        )
-
-
-
-      })
-    }catch (error) {
-      console.log(error);
-      throw ErrorManager.createSignatureError(error); 
-    }
-  }
-
-  findAll(pagination: PaginationRelationsDto) {
-    try {
-      const options: FindManyOptions<Assignments> = {};
-      if (pagination.relations) options.relations = {};
-      const result = paginationResult(this.assignmentsRepository, {
-        ...pagination,
-        options
-      })
-      return result
+          Assignments,
+        );
+      });
     } catch (error) {
       console.log(error);
       throw ErrorManager.createSignatureError(error);
     }
   }
 
-  findOne({ term: id, relations }: FindOneWhitTermAndRelationDto) {
+  async findAll(pagination: PaginationRelationsDto) {
+    try {
+      const options: FindManyOptions<Assignments> = {};
+      if (pagination.relations) options.relations = {};
+      const result = paginationResult(this.assignmentsRepository, {
+        ...pagination,
+        options,
+      });
+      return await result;
+    } catch (error) {
+      console.log(error);
+      throw ErrorManager.createSignatureError(error);
+    }
+  }
+
+  findOne({
+    term: id,
+    deletes,
+    relations,
+    allRelations,
+  }: FindOneWhitTermAndRelationDto) {
     try {
       const options: FindOneOptions<Assignments> = {};
+
+      if (relations || allRelations) {
+        options.relations = {
+          inventoryHasAssigment: {
+            inventory: true,
+          },
+        };
+      }
+      if (allRelations) {
+        options.relations = {
+          inventoryHasAssigment: {
+            inventory: {
+              state: true,
+              resource: {
+                clasification: true,
+                model: true,
+              },
+            },
+          },
+        };
+      }
+      if (deletes) {
+        options.withDeleted = true;
+      }
 
       const result = findOneByTerm({
         repository: this.assignmentsRepository,
         term: id,
         options,
       });
+
       return result;
     } catch (error) {
       console.log(error);
-      throw ErrorManager.createSignatureError(error);   
-    
+      throw ErrorManager.createSignatureError(error);
     }
   }
 
-  update( updateAssignmentDto: UpdateAssignmentDto) {
+  update(updateAssignmentDto: UpdateAssignmentDto) {
     try {
-      const { id,...res } = updateAssignmentDto;
-      return runInTransaction(this.dataSource, async (manager) =>{
-
+      const { id, ...res } = updateAssignmentDto;
+      return runInTransaction(this.dataSource, async (manager) => {
+        const assignment = await this.findOne({
+          term: id,
+          relations: true,
+        });
+        Object.assign(assignment, res);
         const result = await updateResult(
           this.assignmentsRepository,
           id,
-          res
-        )
+          assignment,
+        );
 
         return result;
-      })
+      });
     } catch (error) {
       console.log(error);
-      throw ErrorManager.createSignatureError(error); 
-      
+      throw ErrorManager.createSignatureError(error);
     }
   }
 

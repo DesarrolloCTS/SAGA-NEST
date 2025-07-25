@@ -15,6 +15,7 @@ export class ClasificationsController {
   }
 
   @MessagePattern('findAllClasifications')
+
   findAll(@Payload() pagination: PaginationDto) {
     return this.clasificationsService.findAll(pagination);
   }

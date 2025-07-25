@@ -14,11 +14,18 @@ export class AddRemoveController {
   }
 
   @MessagePattern('findOneInventoryHasAdd')
-  findOne(@Payload() findOne: FindOneWhitTermAndRelationDto) {
-    return this.addRemoveService.findOneByActa(findOne);
+  findOne(
+    @Payload()
+    { term, deletes, relations, allRelations }: FindOneWhitTermAndRelationDto,
+  ) {
+    return this.addRemoveService.findOneByActa({
+      term,
+      relations,
+      deletes,
+      allRelations,
+    });
   }
 
- 
   @MessagePattern('removeInventoryHasAdd')
   remove(@Payload() { id }: { id: number }) {
     return this.addRemoveService.deletePositions(id);
