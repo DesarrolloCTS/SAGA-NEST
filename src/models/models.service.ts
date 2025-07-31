@@ -45,15 +45,15 @@ export class ModelsService {
     }
   }
 
-  async findOne(id: FindOneWhitTermAndRelationDto) {
+  async findOne({ term: id, relations }: FindOneWhitTermAndRelationDto) {
     try {
       const options: FindOneOptions<Model> = {};
 
-      if (id.relations) options.relations = { brand: true };
+      if (relations) options.relations = { brand: true };
 
       const result = await findOneByTerm({
         repository: this.modelRepository,
-        term: id.term,
+        term: id,
         options,
       });
 

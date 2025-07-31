@@ -23,8 +23,16 @@ export class ResourcesController {
   }
 
   @MessagePattern('findOneResource')
-  findOne(@Payload() findOne: FindOneWhitTermAndRelationDto) {
-    return this.resourcesService.findOne(findOne);
+  findOne(
+    @Payload()
+    { term, deletes, relations, allRelations }: FindOneWhitTermAndRelationDto,
+  ) {
+    return this.resourcesService.findOne(
+      term,
+      deletes,
+      relations,
+      allRelations,
+    );
   }
 
   @MessagePattern('updateResource')

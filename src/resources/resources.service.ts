@@ -98,25 +98,44 @@ export class ResourcesService {
     }
   }
 
-  findOne({ term: id, relations }: FindOneWhitTermAndRelationDto) {
+  async findOne({
+    term,
+    deletes,
+    relations,
+    allRelations,
+  }: FindOneWhitTermAndRelationDto) {
     try {
-      const options: FindOneOptions<Resource> = {};
+      const options: FindOneOptions<Resource> = {
+        where: { id: +term },
+        relations: { clasification: true, model: true },
+      };
 
       if (relations) options.relations = { clasification: true, model: true };
+      if (allRelations) {
+        options.relations = {
+          clasification: true,
+          model: {
+            resource: {
+              clasification: true,
+              model: true,
+            },
+          },
+        };
+      }
 
-      const result = findOneByTerm({
-        repository: this.resourceRepository,
-        term: id,
+      if (deletes) {
+        options.withDeleted = true;
+      }
+      const result = await paginationResult(this.resourceRepository, {
+        all: true,
         options,
       });
-
       return result;
     } catch (error) {
       console.log(error);
       throw ErrorManager.createSignatureError(error);
     }
   }
-
   async update(updateResourceDto: UpdateResourceDto) {
     try {
       const { id, ...res } = updateResourceDto;
@@ -145,7 +164,6 @@ export class ResourcesService {
       throw ErrorManager.createSignatureError(error);
     }
   }
-
   remove(id: number) {
     try {
       return deleteResult(this.resourceRepository, id);
