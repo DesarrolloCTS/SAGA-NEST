@@ -51,14 +51,21 @@ export class AssignmentsService {
     }
   }
 
-  findOne({
-    term: id,
+  async findOne({
+    term,
     deletes,
     relations,
     allRelations,
   }: FindOneWhitTermAndRelationDto) {
     try {
-      const options: FindOneOptions<Assignments> = {};
+      const options: FindOneOptions<Assignments> = {
+        where: { id: +term },
+        relations: {
+          inventoryHasAssigment: {
+            inventory: true,
+          },
+        },
+      };
 
       if (relations || allRelations) {
         options.relations = {
@@ -84,19 +91,17 @@ export class AssignmentsService {
         options.withDeleted = true;
       }
 
-      const result = findOneByTerm({
-        repository: this.assignmentsRepository,
-        term: id,
+      const result = await paginationResult(this.assignmentsRepository, {
+        all: true,
         options,
       });
-
       return result;
     } catch (error) {
       console.log(error);
       throw ErrorManager.createSignatureError(error);
     }
   }
-
+  //Todo: Corregir
   update(updateAssignmentDto: UpdateAssignmentDto) {
     try {
       const { id, ...res } = updateAssignmentDto;
@@ -109,7 +114,7 @@ export class AssignmentsService {
         const result = await updateResult(
           this.assignmentsRepository,
           id,
-          assignment,
+          assignment[0].data[0],
         );
 
         return result;
