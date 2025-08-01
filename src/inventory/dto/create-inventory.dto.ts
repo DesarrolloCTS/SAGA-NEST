@@ -1,5 +1,5 @@
-import { IsEnum, IsNotEmpty, IsNumber, IsPositive, IsString } from "class-validator";
-import { STATUS_RESOURCE } from "src/common/constants/enums";
+import { IsEnum, IsNotEmpty, IsNumber, IsString } from 'class-validator';
+import { STATUS_ENTRIES } from 'src/common/constants/';
 export class CreateInventoryDto {
   @IsString()
   @IsNotEmpty()
@@ -18,9 +18,9 @@ export class CreateInventoryDto {
   @IsNumber()
   resourceId: number;
 
-  @IsEnum(STATUS_RESOURCE)
+  @IsEnum(STATUS_ENTRIES)
   @IsNotEmpty()
-  status: STATUS_RESOURCE;
+  status: STATUS_ENTRIES;
 
   @IsNumber()
   ubications: number;

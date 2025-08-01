@@ -1,18 +1,26 @@
 import { Injectable } from '@nestjs/common';
 import { CreateUbicationDto } from './dto/create-ubication.dto';
 import { UpdateUbicationDto } from './dto/update-ubication.dto';
-import { createResult, deleteResult, ErrorManager, findOneByTerm, PaginationDto, paginationResult, updateResult } from 'src/common';
+import {
+  createResult,
+  deleteResult,
+  ErrorManager,
+  findOneByTerm,
+  PaginationDto,
+  paginationResult,
+  updateResult,
+} from 'src/common';
 import { Ubications as Ubication } from 'cts-entities';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 
+
 @Injectable()
 export class UbicationsService {
-
   constructor(
     @InjectRepository(Ubication)
     private readonly ubicationsRepository: Repository<Ubication>,
-  ) { }
+  ) {}
   create(createUbicationDto: CreateUbicationDto) {
     try {
       const result = createResult(
@@ -20,7 +28,7 @@ export class UbicationsService {
         createUbicationDto,
         Ubication,
       );
-      return result
+      return result;
     } catch (error) {
       console.log(error);
       throw ErrorManager.createSignatureError(error);
@@ -28,24 +36,28 @@ export class UbicationsService {
   }
 
   async findAll(pagination: PaginationDto) {
-  try {
-    const result = await paginationResult(this.ubicationsRepository, pagination);
-    return result;
-  } catch (error) {
-    console.log(error);
-    throw ErrorManager.createSignatureError(error);
-    
-  }
-  }
-
-  findOne(id: number) {
     try {
-      const result = findOneByTerm({ repository: this.ubicationsRepository, term: id });
+      const result = await paginationResult(
+        this.ubicationsRepository,
+        pagination,
+      );
       return result;
     } catch (error) {
       console.log(error);
       throw ErrorManager.createSignatureError(error);
-      
+    }
+  }
+
+  findOne(id: number) {
+    try {
+      const result = findOneByTerm({
+        repository: this.ubicationsRepository,
+        term: id,
+      });
+      return result;
+    } catch (error) {
+      console.log(error);
+      throw ErrorManager.createSignatureError(error);
     }
   }
 
@@ -63,7 +75,6 @@ export class UbicationsService {
     } catch (error) {
       console.log(error);
       throw ErrorManager.createSignatureError(error);
-      
     }
   }
 }

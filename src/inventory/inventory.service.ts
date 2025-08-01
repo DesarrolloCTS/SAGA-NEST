@@ -4,11 +4,11 @@ import { UpdateInventoryDto } from './dto/update-inventory.dto';
 import { Inventory, Ubications } from 'cts-entities';
 import { FindManyOptions, FindOneOptions, Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
+
 import {
   createResult,
   deleteResult,
   ErrorManager,
-  findOneByTerm,
   FindOneWhitTermAndRelationDto,
   PaginationFilterAssigmentsDto,
   paginationResult,
@@ -24,29 +24,20 @@ export class InventoryService {
   constructor(
     @InjectRepository(Inventory)
     private readonly inventoryRepository: Repository<Inventory>,
-    private readonly stateServices: StateService,   
-    private readonly ubicationsService: UbicationsService
-
-  ) { }
+    private readonly stateServices: StateService,
+    private readonly ubicationsService: UbicationsService,
+  ) {}
   async create(createInventoryDto: CreateInventoryDto) {
     try {
-
-      const {
-
-        user_id,
-        ubications,
-        status,
-        ...CreateInventoryDto
-      } = createInventoryDto;
+      const { user_id, ubications, ...CreateInventoryDto } = createInventoryDto;
 
       let stateExist = await this.stateServices.findOne(
         createInventoryDto.stateId,
       );
 
       let ubicationExist = await this.ubicationsService.findOne(
-          createInventoryDto.ubications,
+        createInventoryDto.ubications,
       );
-
 
       const result = await createResult(
         this.inventoryRepository,
@@ -54,12 +45,9 @@ export class InventoryService {
           ...CreateInventoryDto,
           ubications: ubicationExist,
           state: stateExist,
-          status: status
-
         },
         Inventory,
       );
-
 
       return result;
     } catch (error) {
@@ -75,13 +63,13 @@ export class InventoryService {
         if (pagination.status) {
           option.where = { status: pagination.status };
         }
-        option.relations = {
-          state: true,
-          resource: {
-            clasification: true,
-            model: true,
-          },
-        };
+      option.relations = {
+        state: true,
+        resource: {
+          clasification: true,
+          model: true,
+        },
+      };
       const result = await paginationResult(this.inventoryRepository, {
         ...pagination,
         options: option,
@@ -92,20 +80,46 @@ export class InventoryService {
     }
   }
 
-  async findOne({ term: id, relations }: FindOneWhitTermAndRelationDto) {
+  async findOne({
+    term,
+    relations,
+    deletes,
+    allRelations,
+  }: FindOneWhitTermAndRelationDto) {
     try {
-      const option: FindOneOptions<Inventory> = {};
-      if (relations)
+      const option: FindOneOptions<Inventory> = {
+        where: { id: +term },
+        relations: {
+          ubications: true,
+          state: true,
+          resource: {
+            clasification: true,
+            model: true,
+          },
+        },
+      };
+      if (relations) {
         option.relations = {
+          ...option.relations,
+          ubications: true,
+          resource: true,
+        };
+      }
+      if (allRelations) {
+        option.relations = {
+          ubications: true,
           state: true,
           resource: {
             clasification: true,
             model: true,
           },
         };
-      const result = findOneByTerm({
-        repository: this.inventoryRepository,
-        term: id,
+      }
+      if (deletes) {
+        option.withDeleted = true;
+      }
+      const result = await paginationResult(this.inventoryRepository, {
+        all: true,
         options: option,
       });
       return result;
@@ -118,15 +132,26 @@ export class InventoryService {
   async update(updateInventoryDto: UpdateInventoryDto) {
     try {
       const { id, ...rest } = updateInventoryDto;
-      const inventory = await findOneByTerm({
-        repository: this.inventoryRepository,
+      const inventory = await this.findOne({
         term: id,
+        relations: true,
       });
+      console.log(inventory.data[0].ubications);
+      if (
+        rest.ubications &&
+        rest.ubications !== inventory.data[0].ubications.id
+      ) {
+        const ubicationExist = await this.findOne({
+          term: rest.ubications,
+        });
+        inventory.data[0].ubications[0] = ubicationExist;
+      }
       Object.assign(inventory, rest);
+      console.log(inventory[0].data);
       const result = await updateResult(
         this.inventoryRepository,
         id,
-        inventory,
+        inventory[0].data,
       );
       return result;
     } catch (error) {

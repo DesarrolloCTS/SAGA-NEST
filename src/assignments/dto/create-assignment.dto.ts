@@ -5,7 +5,7 @@ import {
   IsPositive,
   IsString,
 } from 'class-validator';
-import { ASSIGNMENT_STATUS } from 'src/common/constants/sagaEnums';
+import { ASSIGNMENT_STATUS } from 'src/common/constants/enums';
 export class CreateAssignmentDto {
   @IsString()
   @IsNotEmpty()
