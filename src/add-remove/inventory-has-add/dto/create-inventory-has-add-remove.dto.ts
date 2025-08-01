@@ -13,7 +13,6 @@ import { STATUS_RESOURCE } from 'src/common';
 
 export class CreateHasAddRemoveDto {
   // Resource
-
   @ValidateNested()
   @Type(() => createResourceDto)
   resource: createResourceDto;

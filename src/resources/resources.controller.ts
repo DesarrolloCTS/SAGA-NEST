@@ -27,12 +27,13 @@ export class ResourcesController {
     @Payload()
     { term, deletes, relations, allRelations }: FindOneWhitTermAndRelationDto,
   ) {
-    return this.resourcesService.findOne(
+    console.log({ term, deletes, relations, allRelations });
+    return this.resourcesService.findOne({
       term,
       deletes,
       relations,
       allRelations,
-    );
+    });
   }
 
   @MessagePattern('updateResource')

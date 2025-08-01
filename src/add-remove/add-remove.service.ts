@@ -72,13 +72,15 @@ export class AddRemoveService {
     try {
       const options: FindOneOptions<addRemoval> = {};
 
-      if (relations || allRelations) {
-        options.relations = {
-          inventoryHasAddRemoval: {
-            inventory: true,
-          },
-        };
-      }
+       if (relations)
+         options.relations = {
+           ...options.relations,
+           inventoryHasAddRemoval: {
+             inventory: {
+               ubications: true,
+             },
+           },
+         };
       if (allRelations) {
         options.relations = {
           inventoryHasAddRemoval: {
@@ -118,7 +120,12 @@ export class AddRemoveService {
         });
 
         Object.assign(addRemoval, rest);
-
+        if (
+          rest.ubicationId &&
+          rest.ubicationId !==
+            addRemoval.inventoryHasAddRemoval[0].inventory.ubications.id
+        ) {
+        }
         const result = await updateResult(
           this.addRemovalRepository,
           id,

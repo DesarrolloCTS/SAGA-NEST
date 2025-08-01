@@ -110,7 +110,16 @@ export class ResourcesService {
         relations: { clasification: true, model: true },
       };
 
-      if (relations) options.relations = { clasification: true, model: true };
+      if (relations) options.relations = {
+        ...options.relations,
+        model: {
+          resource: {
+            clasification: true,
+            model: true,
+          },
+        },
+                
+      };
       if (allRelations) {
         options.relations = {
           clasification: true,
@@ -141,23 +150,27 @@ export class ResourcesService {
       const { id, ...res } = updateResourceDto;
       const resource = await this.findOne({ term: id, relations: true });
 
-      if (res.modelId && res.modelId !== resource.model.id) {
+      if (res.modelId && res.modelId !== resource.data[0].model.id) {
         const modelExist = await this.modelsService.findOne({
           term: res.modelId,
         });
-        resource.model = modelExist;
+        resource.data[0].model = modelExist;
       }
       if (
         res.clasificationId &&
-        res.clasificationId !== resource.clasification.id
+        res.clasificationId !== resource.data[0].clasification.id
       ) {
         const claExist = await this.clasificationsService.findOne(
           res.clasificationId,
         );
-        resource.clasification = claExist;
+        resource.data[0].clasification = claExist;
       }
       Object.assign(resource, res);
-      const result = await updateResult(this.resourceRepository, id, resource);
+      const result = await updateResult(
+        this.resourceRepository,
+        id,
+        resource.data[0],
+      );
       return result;
     } catch (error) {
       console.log(error);
